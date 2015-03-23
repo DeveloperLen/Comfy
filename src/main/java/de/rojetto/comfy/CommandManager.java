@@ -1,7 +1,11 @@
 package de.rojetto.comfy;
 
+import de.rojetto.comfy.exception.CommandArgumentException;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CommandManager {
     private final CommandNode root;
@@ -16,8 +20,8 @@ public class CommandManager {
         return root;
     }
 
-    public void call(String command) {
-        String[] chunks = command.split(" ");
+    public boolean call(CommandSender sender, String commandString) {
+        String[] chunks = commandString.split(" ");
         List<CommandNode> nodes = new ArrayList<>();
         int chunkIndex = 0;
         CommandNode currentNode = root;
@@ -25,23 +29,50 @@ public class CommandManager {
         while (!currentNode.isEnd()) {
             currentNode = currentNode.getChildByLabel(chunks[chunkIndex]);
             if (currentNode == null) {
-                System.out.println("Invalid subcommand: " + chunks[chunkIndex]);
-                break;
+                sender.warning("Invalid subcommand: " + chunks[chunkIndex]);
+                return false;
             }
             nodes.add(currentNode);
             chunkIndex += currentNode.getRequiredArguments().size() + 1;
 
             if (!currentNode.isEnd() && chunkIndex >= chunks.length) {
-                System.out.println("Unexpected end of command");
-                break;
+                sender.warning("Unexpected end of command");
+                return false;
             }
         }
 
-        String pattern = "";
-        for (CommandNode node : nodes)
-            pattern += node + " ";
+        Map<String, Object> argumentMap = new HashMap<>();
 
-        System.out.println(pattern);
+        chunkIndex = 0;
+        for (CommandNode node : nodes) {
+            chunkIndex++;
+
+            for (CommandArgument argument : node.getRequiredArguments()) {
+                if (chunkIndex >= chunks.length) {
+                    sender.warning("Not enough arguments");
+                    return false;
+                }
+
+                Object parsed;
+
+                try {
+                    parsed = argument.parse(chunks[chunkIndex]);
+                } catch (CommandArgumentException e) {
+                    sender.warning("Error in argument " + argument.getName() + ":");
+                    sender.warning(e.getMessage());
+
+                    return false;
+                }
+
+                argumentMap.put(argument.getName(), parsed);
+                chunkIndex++;
+            }
+        }
+
+        Arguments arguments = new Arguments(argumentMap);
+        Command command = new Command(sender, arguments);
+
+        return true;
     }
 
     public void addListener(CommandListener listener) {

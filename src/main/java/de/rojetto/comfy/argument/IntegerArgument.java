@@ -34,12 +34,12 @@ public class IntegerArgument extends CommandArgument {
 
     @Override
     protected Object parse(String argument) throws CommandArgumentException {
-        int integer = 0;
+        int integer;
 
         try {
             integer = Integer.parseInt(argument);
         } catch (NumberFormatException e) {
-            throw new CommandArgumentException(getName() + " is not a valid integer.");
+            throw new CommandArgumentException(argument + " is not a valid integer.");
         }
 
         if (checkMin && integer < min)

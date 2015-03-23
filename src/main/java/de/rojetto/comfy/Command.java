@@ -1,7 +1,5 @@
 package de.rojetto.comfy;
 
-import org.bukkit.command.CommandSender;
-
 public class Command {
     private final CommandSender sender;
     private final Arguments arguments;

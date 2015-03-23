@@ -41,4 +41,15 @@ public class Arguments {
     public Map<String, Object> getMap() {
         return new HashMap<>(argumentMap);
     }
+
+    @Override
+    public String toString() {
+        String string = "";
+
+        for (String key : argumentMap.keySet()) {
+            string += key + ": " + argumentMap.get(key) + " ";
+        }
+
+        return string;
+    }
 }
