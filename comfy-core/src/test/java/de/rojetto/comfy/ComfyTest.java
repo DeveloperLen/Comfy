@@ -7,12 +7,7 @@ import org.junit.Test;
 public class ComfyTest implements CommandListener {
     @Test
     public void test() {
-        CommandManager manager = new CommandManager() {
-            @Override
-            public void registerCommands() {
-
-            }
-        };
+        TestCommandManager manager = new TestCommandManager();
         manager.addListener(this);
         CommandNode cmd1 = manager.commands().child("cmd1");
         cmd1.child("cmd11").required(new StringArgument("arg111"));
@@ -26,6 +21,24 @@ public class ComfyTest implements CommandListener {
         cmd3.child("cmd31").required(new StringArgument("arg311"));
         cmd3.child("cmd32").required(new StringArgument("arg321")).required(new StringArgument("arg322"));
 
-        manager.parseCommandString(new ConsoleSender(), "cmd2 aaa cmd21 1 ccc ddd");
+
+        manager.registerCommands();
+        manager.callTestCommand(new ConsoleSender(), "cmd1 aaa cmd21 1 ccc ddd");
+    }
+
+    @CommandHandler("cmd1.cmd12")
+    public void testCommandHandler(Command command) {
+        command.getSender().info(command.getPath());
+    }
+
+    class TestCommandManager extends CommandManager {
+        @Override
+        public void registerCommands() {
+
+        }
+
+        public void callTestCommand(CommandSender sender, String commandString) {
+            this.process(sender, commandString);
+        }
     }
 }
