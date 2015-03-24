@@ -15,19 +15,19 @@ public class Arguments {
     }
 
     public int getInt(String name) {
-        return (int) argumentMap.get(name);
+        return (Integer) argumentMap.get(name);
     }
 
     public double getDouble(String name) {
-        return (double) argumentMap.get(name);
+        return (Double) argumentMap.get(name);
     }
 
     public float getFloat(String name) {
-        return (float) argumentMap.get(name);
+        return (Float) argumentMap.get(name);
     }
 
     public boolean getBoolean(String name) {
-        return (boolean) argumentMap.get(name);
+        return (Boolean) argumentMap.get(name);
     }
 
     public Object get(String name) {

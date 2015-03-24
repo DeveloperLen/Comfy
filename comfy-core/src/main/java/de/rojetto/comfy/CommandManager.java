@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CommandManager {
+public abstract class CommandManager {
     private final CommandNode root;
     private final List<CommandListener> listeners;
 
@@ -16,11 +16,11 @@ public class CommandManager {
         this.listeners = new ArrayList<>();
     }
 
-    public CommandNode commandRoot() {
+    public CommandNode commands() {
         return root;
     }
 
-    public boolean call(CommandSender sender, String commandString) {
+    protected Command parseCommandString(CommandSender sender, String commandString) {
         String[] chunks = commandString.split(" ");
         List<CommandNode> nodes = new ArrayList<>();
         int chunkIndex = 0;
@@ -30,14 +30,14 @@ public class CommandManager {
             currentNode = currentNode.getChildByLabel(chunks[chunkIndex]);
             if (currentNode == null) {
                 sender.warning("Invalid subcommand: " + chunks[chunkIndex]);
-                return false;
+                return null;
             }
             nodes.add(currentNode);
             chunkIndex += currentNode.getRequiredArguments().size() + 1;
 
             if (!currentNode.isEnd() && chunkIndex >= chunks.length) {
                 sender.warning("Unexpected end of command");
-                return false;
+                return null;
             }
         }
 
@@ -50,7 +50,7 @@ public class CommandManager {
             for (CommandArgument argument : node.getRequiredArguments()) {
                 if (chunkIndex >= chunks.length) {
                     sender.warning("Not enough arguments");
-                    return false;
+                    return null;
                 }
 
                 Object parsed;
@@ -61,7 +61,7 @@ public class CommandManager {
                     sender.warning("Error in argument " + argument.getName() + ":");
                     sender.warning(e.getMessage());
 
-                    return false;
+                    return null;
                 }
 
                 argumentMap.put(argument.getName(), parsed);
@@ -72,10 +72,12 @@ public class CommandManager {
         Arguments arguments = new Arguments(argumentMap);
         Command command = new Command(sender, arguments);
 
-        return true;
+        return command;
     }
 
     public void addListener(CommandListener listener) {
         listeners.add(listener);
     }
+
+    public abstract void registerCommands();
 }

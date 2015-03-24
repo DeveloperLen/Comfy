@@ -1,4 +1,4 @@
-package de.rojetto.comfy.argument;
+package de.rojetto.comfy.bukkit.argument;
 
 import de.rojetto.comfy.CommandArgument;
 import de.rojetto.comfy.exception.CommandArgumentException;
