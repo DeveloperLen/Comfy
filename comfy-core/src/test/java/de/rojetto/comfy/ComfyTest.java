@@ -9,26 +9,22 @@ public class ComfyTest implements CommandListener {
     public void test() {
         TestCommandManager manager = new TestCommandManager();
         manager.addListener(this);
-        CommandNode cmd1 = manager.commands().child("cmd1");
-        cmd1.child("cmd11").required(new StringArgument("arg111"));
-        cmd1.child("cmd12").required(new StringArgument("arg121")).required(new StringArgument("arg122"));
+        manager.registerCommand(new Literal("command")
+                        .child(new Literal("list"))
+                        .child(new StringArgument("name")
+                                .child(new Literal("add"))
+                                .child(new Literal("remove")))
+        );
 
-        CommandNode cmd2 = manager.commands().child("cmd2").required(new StringArgument("arg21"));
-        cmd2.child("cmd21").required(new IntegerArgument("arg211")).required(new StringArgument("arg212"));
-        cmd2.child("cmd22");
+        manager.registerCommand(new Literal("command2")
+                .child(new IntegerArgument("number"))
+                .child(new StringArgument("string")));
 
-        CommandNode cmd3 = manager.commands().child("cmd3");
-        cmd3.child("cmd31").required(new StringArgument("arg311"));
-        cmd3.child("cmd32").required(new StringArgument("arg321")).required(new StringArgument("arg322"));
-
-
-        manager.registerCommands();
-        manager.callTestCommand(new ConsoleSender(), "cmd1 aaa cmd21 1 ccc ddd");
+        manager.callTestCommand(new ConsoleSender(), "command heyhey add");
     }
 
-    @CommandHandler("cmd1.cmd12")
-    public void testCommandHandler(Command command) {
-        command.getSender().info(command.getPath());
+    public void testCommand(int arg1, boolean arg2, int arg3) {
+
     }
 
     class TestCommandManager extends CommandManager {

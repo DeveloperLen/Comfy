@@ -1,9 +1,8 @@
 package de.rojetto.comfy;
 
 import de.rojetto.comfy.exception.CommandArgumentException;
+import de.rojetto.comfy.exception.CommandPathException;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,96 +13,100 @@ public abstract class CommandManager {
     private final List<CommandListener> listeners;
 
     public CommandManager() {
-        this.root = new CommandNode("root", null);
+        this.root = new CommandNode() {
+            @Override
+            public boolean matches(String segmentString) {
+                return false;
+            }
+        };
+
         this.listeners = new ArrayList<>();
     }
 
-    public CommandNode commands() {
-        return root;
+    public void registerCommand(CommandNode commandNode) {
+        root.child(commandNode);
     }
 
-    private Command parseCommandString(CommandSender sender, String commandString) {
-        String[] chunks = commandString.split(" ");
-        List<CommandNode> nodes = new ArrayList<>();
-        int chunkIndex = 0;
+    private List<CommandNode> getCommandPath(String[] segments, boolean returnIncompletePath) throws CommandPathException {
+        List<CommandNode> path = new ArrayList<>();
         CommandNode currentNode = root;
+        CommandNode nextNode;
 
-        while (!currentNode.isEnd()) {
-            currentNode = currentNode.getChildByLabel(chunks[chunkIndex]);
-            if (currentNode == null) {
-                sender.warning("Invalid subcommand: " + chunks[chunkIndex]);
-                return null;
-            }
-            nodes.add(currentNode);
-            chunkIndex += currentNode.getRequiredArguments().size() + 1;
+        for (int i = 0; i < segments.length; i++) {
+            String segment = segments[i];
+            nextNode = null;
 
-            if (!currentNode.isEnd() && chunkIndex >= chunks.length) {
-                sender.warning("Unexpected end of command");
-                return null;
+            for (CommandNode child : currentNode.getChildren()) {
+                if (child.matches(segment)) {
+                    nextNode = child;
+                    break;
+                }
             }
+
+            if (nextNode == null) {
+                if (returnIncompletePath) {
+                    return path;
+                } else {
+                    throw new CommandPathException(segment + " doesn't match any child node.");
+                }
+            }
+
+            path.add(nextNode);
+            currentNode = nextNode;
         }
 
+        return path;
+    }
+
+    private Command parseCommandString(CommandSender sender, String commandString) throws CommandPathException, CommandArgumentException {
+        String[] segments = commandString.split(" ");
+
+        List<CommandNode> path = getCommandPath(segments, false);
         Map<String, Object> argumentMap = new HashMap<>();
 
-        chunkIndex = 0;
-        for (CommandNode node : nodes) {
-            chunkIndex++;
+        for (int i = 0; i < segments.length; i++) {
+            CommandNode node = path.get(i);
 
-            for (CommandArgument argument : node.getRequiredArguments()) {
-                if (chunkIndex >= chunks.length) {
-                    sender.warning("Not enough arguments");
-                    return null;
+            if (node instanceof CommandArgument) {
+                CommandArgument argument = (CommandArgument) node;
+
+                String segment = "";
+
+                if (node.getChildren().size() == 0) {
+                    for (int j = i; j < segments.length; j++) {
+                        segment += segments[j];
+                        if (j < segments.length - 1) {
+                            segment += " ";
+                        }
+                    }
+                } else {
+                    segment = segments[i];
                 }
 
-                Object parsed;
-
-                try {
-                    parsed = argument.parse(chunks[chunkIndex]);
-                } catch (CommandArgumentException e) {
-                    sender.warning("Error in argument " + argument.getName() + ":");
-                    sender.warning(e.getMessage());
-
-                    return null;
-                }
-
-                argumentMap.put(argument.getName(), parsed);
-                chunkIndex++;
+                Object argumentValue = argument.process(segment);
+                argumentMap.put(argument.getName(), argumentValue);
             }
         }
 
-        String path = "";
-
-        for (int i = 0; i < nodes.size(); i++) {
-            path += nodes.get(i).getLabel();
-            if (i < nodes.size() - 1)
-                path += ".";
-        }
-
-        Arguments arguments = new Arguments(argumentMap);
-        Command command = new Command(sender, path, arguments);
-
-        return command;
+        return new Command(sender, new Arguments(argumentMap));
     }
 
     protected void process(CommandSender sender, String commandString) {
-        Command command = parseCommandString(sender, commandString);
-        callHandlerMethod(command);
+        Command command;
+
+        try {
+            command = parseCommandString(sender, commandString);
+            if (command != null)
+                callHandlerMethod(command);
+        } catch (CommandPathException e) {
+            sender.warning(e.getMessage());
+        } catch (CommandArgumentException e) {
+            sender.warning(e.getMessage());
+        }
     }
 
     private void callHandlerMethod(Command command) {
-        for (CommandListener listener : listeners) {
-            for (Method method : listener.getClass().getMethods()) {
-                if (method.getAnnotation(CommandHandler.class) != null && method.getAnnotation(CommandHandler.class).value().equalsIgnoreCase(command.getPath())) {
-                    try {
-                        method.invoke(listener, command);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+
     }
 
     public void addListener(CommandListener listener) {

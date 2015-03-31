@@ -33,7 +33,7 @@ public class IntegerArgument extends CommandArgument {
     }
 
     @Override
-    protected Object parse(String argument) throws CommandArgumentException {
+    protected Object process(String argument) throws CommandArgumentException {
         int integer;
 
         try {
@@ -49,5 +49,16 @@ public class IntegerArgument extends CommandArgument {
             throw new CommandArgumentException(getName() + " must be smaller than " + max);
 
         return integer;
+    }
+
+    @Override
+    public boolean matches(String segmentString) {
+        try {
+            Integer.parseInt(segmentString);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        return true;
     }
 }

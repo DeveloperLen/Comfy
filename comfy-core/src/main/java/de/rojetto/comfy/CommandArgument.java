@@ -2,7 +2,7 @@ package de.rojetto.comfy;
 
 import de.rojetto.comfy.exception.CommandArgumentException;
 
-public abstract class CommandArgument {
+public abstract class CommandArgument extends CommandNode {
     private final String name;
 
     protected CommandArgument(String name) {
@@ -13,5 +13,5 @@ public abstract class CommandArgument {
         return name;
     }
 
-    abstract protected Object parse(String argument) throws CommandArgumentException;
+    abstract protected Object process(String argument) throws CommandArgumentException;
 }

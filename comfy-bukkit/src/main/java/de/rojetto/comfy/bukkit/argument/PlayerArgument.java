@@ -11,7 +11,7 @@ public class PlayerArgument extends CommandArgument {
     }
 
     @Override
-    protected Object parse(String argument) throws CommandArgumentException {
+    protected Object process(String argument) throws CommandArgumentException {
         Player player = null;
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers())
@@ -22,5 +22,10 @@ public class PlayerArgument extends CommandArgument {
             throw new CommandArgumentException("Player " + argument + " doesn't exist");
 
         return player;
+    }
+
+    @Override
+    public boolean matches(String segmentString) {
+        return true;
     }
 }
