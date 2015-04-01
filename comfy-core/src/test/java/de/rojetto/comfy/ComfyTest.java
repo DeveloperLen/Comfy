@@ -1,6 +1,5 @@
 package de.rojetto.comfy;
 
-import de.rojetto.comfy.argument.IntegerArgument;
 import de.rojetto.comfy.argument.StringArgument;
 import org.junit.Test;
 
@@ -11,21 +10,34 @@ public class ComfyTest implements CommandListener {
         manager.addListener(this);
         manager.addCommand(new Literal("command")
                         .child(new Literal("list").executes("listCommands"))
+                        .child(new Literal("message", "msg")
+                                .child(new StringArgument("text").executes("msgCommand")))
                         .child(new StringArgument("name")
-                                .child(new Literal("add"))
-                                .child(new Literal("remove")))
+                                .child(new Literal("add").executes("addCommand"))
+                                .child(new Literal("remove").executes("removeCommand")))
         );
 
-        manager.addCommand(new Literal("command2")
-                .child(new IntegerArgument("number"))
-                .child(new StringArgument("string")));
-
-        manager.callTestCommand(new ConsoleSender(), "command list");
+        manager.callTestCommand(new ConsoleSender(), "command msg Hey ich bin Robert");
     }
 
     @CommandHandler("listCommands")
-    public void listCommands(TestCommandContext context) {
+    public void testCommandHandler(TestCommandContext context) {
+        context.getSender().info(context.getPath() + "; " + context.getArguments());
+    }
 
+    @CommandHandler("addCommand")
+    public void addCommand(TestCommandContext context) {
+        context.getSender().info(context.getPath() + "; " + context.getArguments());
+    }
+
+    @CommandHandler("removeCommand")
+    public void removeCommand(TestCommandContext context) {
+        context.getSender().info(context.getPath() + "; " + context.getArguments());
+    }
+
+    @CommandHandler("msgCommand")
+    public void msgCommand(TestCommandContext context) {
+        context.getSender().info(context.getPath() + "; " + context.getArguments());
     }
 
 
@@ -48,6 +60,18 @@ public class ComfyTest implements CommandListener {
     class TestCommandContext extends CommandContext {
         protected TestCommandContext(CommandSender sender, CommandPath path, Arguments arguments) {
             super(sender, path, arguments);
+        }
+    }
+
+    class ConsoleSender implements CommandSender {
+        @Override
+        public void warning(String message) {
+            System.out.println("[warning] " + message);
+        }
+
+        @Override
+        public void info(String message) {
+            System.out.println("[info] " + message);
         }
     }
 }

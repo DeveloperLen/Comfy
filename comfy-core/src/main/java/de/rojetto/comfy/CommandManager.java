@@ -38,7 +38,7 @@ public abstract class CommandManager {
             CommandContext context = buildContext(sender, path, args);
 
             if (!path.getLastNode().isExecutable()) {
-                // TODO: Help with usage (paths to next executes or something)
+                sender.warning("This is no complete command, silly"); // TODO: Be helpful instead
             } else {
                 callHandlerMethod(path.getLastNode().getExecutor(), context);
             }
@@ -54,15 +54,16 @@ public abstract class CommandManager {
     private void callHandlerMethod(String executor, CommandContext context) throws CommandHandlerException {
         for (CommandListener listener : listeners) {
             for (Method method : listener.getClass().getMethods()) {
-                CommandHandler annotation = method.getAnnotation(CommandHandler.class);
-                if (annotation != null) {
-                    if (executor.equals(annotation.value())) {
-                        try {
-                            method.invoke(listener, context);
-                        } catch (IllegalAccessException e) {
-                            throw new CommandHandlerException(e.getMessage()); // TODO: Proper messages
-                        } catch (InvocationTargetException e) {
-                            throw new CommandHandlerException(e.getMessage());
+                for (CommandHandler annotation : method.getAnnotationsByType(CommandHandler.class)) {
+                    if (annotation != null) {
+                        if (executor.equals(annotation.value())) {
+                            try {
+                                method.invoke(listener, context);
+                            } catch (IllegalAccessException e) {
+                                throw new CommandHandlerException(e.getMessage()); // TODO: Proper messages
+                            } catch (InvocationTargetException e) {
+                                throw new CommandHandlerException(e.getMessage());
+                            }
                         }
                     }
                 }

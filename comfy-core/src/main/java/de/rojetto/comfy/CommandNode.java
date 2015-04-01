@@ -41,6 +41,8 @@ public abstract class CommandNode {
 
         for (CommandNode child : children) {
             StringBuilder segment = new StringBuilder();
+            boolean lastNode;
+
             if (child.getChildren().size() == 0) { // If this is an end point, give it all of the remaining segments
                 for (int i = 0; i < segments.size(); i++) {
                     segment.append(segments.get(i));
@@ -48,12 +50,19 @@ public abstract class CommandNode {
                         segment.append(" ");
                     }
                 }
+
+                lastNode = true;
             } else {
                 segment.append(segments.get(0));
+                lastNode = false;
             }
 
             if (child.matches(segment.toString())) {
-                segmentsCopy.remove(0);
+                if (lastNode) {
+                    segmentsCopy.clear();
+                } else {
+                    segmentsCopy.remove(0);
+                }
                 path.getNodeList().add(child);
                 path.getNodeList().addAll(child.parsePath(segmentsCopy, returnIncompletePath).getNodeList());
                 matchedChild = true;
