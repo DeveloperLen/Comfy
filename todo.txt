@@ -1,4 +1,4 @@
-* Actually execute command handler methods
+* Actually execute command handler methods - DONE
 * Pass arguments directly to method parameters
 * Validate command tree on command registration
     * No multiple arguments with the same name in one branch

@@ -12,12 +12,16 @@ public class ComfyTest implements CommandListener {
                         .child(new Literal("list").executes("listCommands"))
                         .child(new Literal("message", "msg")
                                 .child(new StringArgument("text").executes("msgCommand")))
+                        .child(new Literal("opt")
+                                .child(new StringArgument("r1").executes("optCommand")
+                                        .child(new StringArgument("o1")
+                                                .child(new StringArgument("o2")))))
                         .child(new StringArgument("name")
                                 .child(new Literal("add").executes("addCommand"))
                                 .child(new Literal("remove").executes("removeCommand")))
         );
 
-        manager.callTestCommand(new ConsoleSender(), "command msg Hey ich bin Robert");
+        manager.callTestCommand(new ConsoleSender(), "command opt 1 2 3 4");
     }
 
     @CommandHandler("listCommands")
@@ -37,6 +41,11 @@ public class ComfyTest implements CommandListener {
 
     @CommandHandler("msgCommand")
     public void msgCommand(TestCommandContext context) {
+        context.getSender().info(context.getPath() + "; " + context.getArguments());
+    }
+
+    @CommandHandler("optCommand")
+    public void optCommand(TestCommandContext context) {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
     }
 
