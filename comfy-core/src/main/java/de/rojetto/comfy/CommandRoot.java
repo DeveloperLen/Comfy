@@ -7,7 +7,7 @@ public class CommandRoot extends CommandNode {
     }
 
     @Override
-    public String getExecutor() {
-        return null;
+    public boolean isExecutable() {
+        return false;
     }
 }

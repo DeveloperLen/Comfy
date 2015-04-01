@@ -19,7 +19,7 @@ public class CommandPath {
         for (int i = 0; i < segments.size(); i++) {
             StringBuilder segment = new StringBuilder();
 
-            if (i == nodeList.size() - 1) {
+            if (i == nodeList.size() - 1) { // If this is an end point, give it all of the remaining segments
                 for (int j = i; j < segments.size(); j++) {
                     segment.append(segments.get(j));
                     if (j < segments.size() - 1) {
@@ -38,6 +38,10 @@ public class CommandPath {
         }
 
         return new Arguments(argumentMap);
+    }
+
+    public CommandNode getLastNode() {
+        return nodeList.get(nodeList.size() - 1);
     }
 
     public List<CommandNode> getNodeList() {

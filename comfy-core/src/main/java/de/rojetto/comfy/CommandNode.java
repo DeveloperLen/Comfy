@@ -41,7 +41,7 @@ public abstract class CommandNode {
 
         for (CommandNode child : children) {
             StringBuilder segment = new StringBuilder();
-            if (child.getChildren().size() == 0) {
+            if (child.getChildren().size() == 0) { // If this is an end point, give it all of the remaining segments
                 for (int i = 0; i < segments.size(); i++) {
                     segment.append(segments.get(i));
                     if (i < segments.size() - 1) {
@@ -82,15 +82,27 @@ public abstract class CommandNode {
     }
 
     public boolean isExecutable() {
-        return executes != null;
+        if (executes != null) {
+            return true;
+        } else {
+            if (isOptional()) {
+                return parent.isExecutable();
+            } else {
+                return false;
+            }
+        }
     }
 
     public String getExecutor() {
-        if (executes == null) {
-            return parent.getExecutor();
+        if (isExecutable()) {
+            if (executes != null) {
+                return executes;
+            } else {
+                return parent.getExecutor();
+            }
+        } else {
+            return null;
         }
-
-        return executes;
     }
 
     public CommandPath getPath() {

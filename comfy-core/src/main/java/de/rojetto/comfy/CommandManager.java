@@ -1,8 +1,11 @@
 package de.rojetto.comfy;
 
 import de.rojetto.comfy.exception.CommandArgumentException;
+import de.rojetto.comfy.exception.CommandHandlerException;
 import de.rojetto.comfy.exception.CommandPathException;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +24,10 @@ public abstract class CommandManager {
         root.child(commandNode);
     }
 
+    public void addListener(CommandListener listener) {
+        listeners.add(listener);
+    }
+
     protected void process(CommandSender sender, String commandString) {
         List<String> segments = Arrays.asList(commandString.split(" "));
 
@@ -30,16 +37,37 @@ public abstract class CommandManager {
 
             CommandContext context = buildContext(sender, path, args);
 
-            //TODO: Actually call the handler method
+            if (!path.getLastNode().isExecutable()) {
+                // TODO: Help with usage (paths to next executes or something)
+            } else {
+                callHandlerMethod(path.getLastNode().getExecutor(), context);
+            }
         } catch (CommandPathException e) {
-            sender.warning(e.getMessage()); //TODO: Help with usage (paths to next executes or something)
+            sender.warning(e.getMessage());
         } catch (CommandArgumentException e) {
             sender.warning(e.getMessage());
+        } catch (CommandHandlerException e) {
+            e.printStackTrace();
         }
     }
 
-    public void addListener(CommandListener listener) {
-        listeners.add(listener);
+    private void callHandlerMethod(String executor, CommandContext context) throws CommandHandlerException {
+        for (CommandListener listener : listeners) {
+            for (Method method : listener.getClass().getMethods()) {
+                CommandHandler annotation = method.getAnnotation(CommandHandler.class);
+                if (annotation != null) {
+                    if (executor.equals(annotation.value())) {
+                        try {
+                            method.invoke(listener, context);
+                        } catch (IllegalAccessException e) {
+                            throw new CommandHandlerException(e.getMessage()); // TODO: Proper messages
+                        } catch (InvocationTargetException e) {
+                            throw new CommandHandlerException(e.getMessage());
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected abstract CommandContext buildContext(CommandSender sender, CommandPath path, Arguments arguments);

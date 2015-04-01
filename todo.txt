@@ -4,9 +4,9 @@
     * No multiple arguments with the same name in one branch
     * No branches after final executes
     * Invalid names and labels (whitespace etc)
-* Show paths to next executes on "invalid" command
 * Actually match with combined last parameters when reaching a leaf - DONE
 * Help system?
+    * Show paths to next executes on "invalid" command
     * Descriptions
     * Command for showing all executable paths
 * Flags?
