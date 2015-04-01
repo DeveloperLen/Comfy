@@ -33,7 +33,7 @@ public class IntegerArgument extends CommandArgument {
     }
 
     @Override
-    protected Object process(String argument) throws CommandArgumentException {
+    protected Object parse(String argument) throws CommandArgumentException {
         int integer;
 
         try {

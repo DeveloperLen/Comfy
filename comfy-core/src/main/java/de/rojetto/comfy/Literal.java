@@ -23,4 +23,9 @@ public class Literal extends CommandNode {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        return aliases.get(0);
+    }
 }

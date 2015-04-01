@@ -1,16 +1,22 @@
 package de.rojetto.comfy;
 
-public class Command {
+public abstract class CommandContext {
     private final CommandSender sender;
+    private final CommandPath path;
     private final Arguments arguments;
 
-    protected Command(CommandSender sender, Arguments arguments) {
+    protected CommandContext(CommandSender sender, CommandPath path, Arguments arguments) {
         this.sender = sender;
+        this.path = path;
         this.arguments = arguments;
     }
 
     public CommandSender getSender() {
         return sender;
+    }
+
+    public CommandPath getPath() {
+        return path;
     }
 
     public Arguments getArguments() {

@@ -11,7 +11,7 @@ public class PlayerArgument extends CommandArgument {
     }
 
     @Override
-    protected Object process(String argument) throws CommandArgumentException {
+    protected Object parse(String argument) throws CommandArgumentException {
         Player player = null;
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers())

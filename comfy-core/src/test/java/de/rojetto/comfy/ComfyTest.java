@@ -9,25 +9,32 @@ public class ComfyTest implements CommandListener {
     public void test() {
         TestCommandManager manager = new TestCommandManager();
         manager.addListener(this);
-        manager.registerCommand(new Literal("command")
-                        .child(new Literal("list"))
+        manager.addCommand(new Literal("command")
+                        .child(new Literal("list").executes("listCommands"))
                         .child(new StringArgument("name")
                                 .child(new Literal("add"))
                                 .child(new Literal("remove")))
         );
 
-        manager.registerCommand(new Literal("command2")
+        manager.addCommand(new Literal("command2")
                 .child(new IntegerArgument("number"))
                 .child(new StringArgument("string")));
 
-        manager.callTestCommand(new ConsoleSender(), "command heyhey add");
+        manager.callTestCommand(new ConsoleSender(), "command list");
     }
 
-    public void testCommand(int arg1, boolean arg2, int arg3) {
+    @CommandHandler("listCommands")
+    public void listCommands(TestCommandContext context) {
 
     }
+
 
     class TestCommandManager extends CommandManager {
+        @Override
+        protected CommandContext buildContext(CommandSender sender, CommandPath path, Arguments arguments) {
+            return new TestCommandContext(sender, path, arguments);
+        }
+
         @Override
         public void registerCommands() {
 
@@ -35,6 +42,12 @@ public class ComfyTest implements CommandListener {
 
         public void callTestCommand(CommandSender sender, String commandString) {
             this.process(sender, commandString);
+        }
+    }
+
+    class TestCommandContext extends CommandContext {
+        protected TestCommandContext(CommandSender sender, CommandPath path, Arguments arguments) {
+            super(sender, path, arguments);
         }
     }
 }

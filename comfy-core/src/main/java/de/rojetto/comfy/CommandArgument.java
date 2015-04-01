@@ -9,9 +9,18 @@ public abstract class CommandArgument extends CommandNode {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        if (isOptional()) {
+            return "<" + name + ">";
+        } else {
+            return "[" + name + "]";
+        }
+    }
+
     public String getName() {
         return name;
     }
 
-    abstract protected Object process(String argument) throws CommandArgumentException;
+    abstract protected Object parse(String argument) throws CommandArgumentException;
 }
