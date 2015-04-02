@@ -1,17 +1,26 @@
 * Actually execute command handler methods - DONE
 * Pass arguments directly to method parameters
 * Validate command tree on command registration
-    * No multiple arguments with the same name in one branch
-    * No branches after final executes
-    * Invalid names and labels (whitespace etc)
+    * No multiple arguments with the same name in one branch - DONE
+    * No branches after final executes - DONE
+    * Invalid names and labels (whitespace etc) - DONE
+* Validate (and cache) handler methods
 * Actually match with combined last parameters when reaching a leaf - DONE
 * Help system?
     * Show paths to next executes on "invalid" command
     * Descriptions
     * Command for showing all executable paths
+* Tab completion
+* Permissions
+* Arguments
+    * Floats, (Doubles)
+    * Booleans
+    * String[]?
+    * Enums
 * Flags?
 * Paths should actually contain nodes - DONE
 * Recursive command parsing? - DONE
+* Proper tests
 * Bukkit implementation
 * Bungee implementation?
 * Documentation

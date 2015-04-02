@@ -1,7 +1,7 @@
 package de.rojetto.comfy;
 
-import de.rojetto.comfy.exception.CommandCreationException;
 import de.rojetto.comfy.exception.CommandPathException;
+import de.rojetto.comfy.exception.CommandTreeException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +14,7 @@ public abstract class CommandNode {
 
     public CommandNode child(CommandNode child) {
         if (child.getParent() != null) {
-            throw new CommandCreationException("This node already has a parent");
+            throw new CommandTreeException("This node already has a parent");
         }
 
         child.parent = this;
@@ -43,7 +43,7 @@ public abstract class CommandNode {
             StringBuilder segment = new StringBuilder();
             boolean lastNode;
 
-            if (child.getChildren().size() == 0) { // If this is an end point, give it all of the remaining segments
+            if (child.isLeaf()) { // If this is an end point, give it all of the remaining segments
                 for (int i = 0; i < segments.size(); i++) {
                     segment.append(segments.get(i));
                     if (i < segments.size() - 1) {
@@ -102,6 +102,10 @@ public abstract class CommandNode {
         }
     }
 
+    public boolean isLeaf() {
+        return children.size() == 0;
+    }
+
     public String getExecutor() {
         if (isExecutable()) {
             if (executes != null) {
@@ -126,6 +130,36 @@ public abstract class CommandNode {
         Collections.reverse(nodeList);
 
         return new CommandPath(nodeList);
+    }
+
+    public List<CommandNode> getLeafNodes() {
+        List<CommandNode> leafNodes = new ArrayList<>();
+
+        if (isLeaf()) {
+            leafNodes.add(this);
+        } else {
+            for (CommandNode child : children) {
+                leafNodes.addAll(child.getLeafNodes());
+            }
+        }
+
+        return leafNodes;
+    }
+
+    public List<CommandNode> getExecutableNodes(boolean deepSearch) {
+        List<CommandNode> nodes = new ArrayList<>();
+
+        if (executes != null) {
+            nodes.add(this);
+        }
+
+        if (deepSearch || executes == null) {
+            for (CommandNode child : children) {
+                nodes.addAll(child.getExecutableNodes(deepSearch));
+            }
+        }
+
+        return nodes;
     }
 
     public abstract boolean matches(String segmentString);

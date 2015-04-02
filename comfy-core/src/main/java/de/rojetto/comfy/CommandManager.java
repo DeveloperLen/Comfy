@@ -3,12 +3,11 @@ package de.rojetto.comfy;
 import de.rojetto.comfy.exception.CommandArgumentException;
 import de.rojetto.comfy.exception.CommandHandlerException;
 import de.rojetto.comfy.exception.CommandPathException;
+import de.rojetto.comfy.exception.CommandTreeException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public abstract class CommandManager {
     private final CommandRoot root;
@@ -26,6 +25,11 @@ public abstract class CommandManager {
 
     public void addListener(CommandListener listener) {
         listeners.add(listener);
+    }
+
+    public void registerCommands() {
+        validateTree();
+        onRegisterCommands();
     }
 
     protected void process(CommandSender sender, String commandString) {
@@ -71,7 +75,36 @@ public abstract class CommandManager {
         }
     }
 
+    private void validateTree() throws CommandTreeException {
+        for (CommandNode leaf : root.getLeafNodes()) {
+            Map<String, Boolean> usedArgumentNames = new HashMap<>();
+
+            for (CommandNode node : leaf.getPath().getNodeList()) {
+                if (node instanceof CommandArgument) {
+                    CommandArgument arg = (CommandArgument) node;
+                    if (usedArgumentNames.containsKey(arg.getName())) {
+                        throw new CommandTreeException("Argument " + arg + " already exists in this path.");
+                    } else {
+                        usedArgumentNames.put(arg.getName(), true);
+                    }
+                }
+            }
+        }
+
+        for (CommandNode executable : root.getExecutableNodes(true)) {
+            if (executable.getExecutableNodes(true).size() == 1) { // If it's the last executable in this path
+                if (executable.getLeafNodes().size() > 1) { // and there are branches after this one
+                    throw new CommandTreeException("No branches after last executable in a path allowed.");
+                }
+            }
+        }
+    }
+
+    public CommandRoot getRoot() {
+        return root;
+    }
+
     protected abstract CommandContext buildContext(CommandSender sender, CommandPath path, Arguments arguments);
 
-    public abstract void registerCommands();
+    protected abstract void onRegisterCommands();
 }

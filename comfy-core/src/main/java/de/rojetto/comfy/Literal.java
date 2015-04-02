@@ -1,5 +1,7 @@
 package de.rojetto.comfy;
 
+import de.rojetto.comfy.exception.CommandTreeException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +13,12 @@ public class Literal extends CommandNode {
         this.aliases = new ArrayList<>();
         this.aliases.add(label);
         this.aliases.addAll(Arrays.asList(aliases));
+
+        for (String alias : this.aliases) {
+            if (!alias.matches("[A-Za-z0-9]+")) {
+                throw new CommandTreeException("Literals can only contain alphanumeric characters.");
+            }
+        }
     }
 
     @Override

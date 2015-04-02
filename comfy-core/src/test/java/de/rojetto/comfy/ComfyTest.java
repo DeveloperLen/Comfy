@@ -8,7 +8,7 @@ public class ComfyTest implements CommandListener {
     public void test() {
         TestCommandManager manager = new TestCommandManager();
         manager.addListener(this);
-        manager.addCommand(new Literal("command")
+        manager.addCommand(new Literal("command", "c")
                         .child(new Literal("list").executes("listCommands"))
                         .child(new Literal("message", "msg")
                                 .child(new StringArgument("text").executes("msgCommand")))
@@ -21,6 +21,7 @@ public class ComfyTest implements CommandListener {
                                 .child(new Literal("remove").executes("removeCommand")))
         );
 
+        manager.registerCommands();
         manager.callTestCommand(new ConsoleSender(), "command opt 1 2 3 4");
     }
 
@@ -57,7 +58,7 @@ public class ComfyTest implements CommandListener {
         }
 
         @Override
-        public void registerCommands() {
+        protected void onRegisterCommands() {
 
         }
 
