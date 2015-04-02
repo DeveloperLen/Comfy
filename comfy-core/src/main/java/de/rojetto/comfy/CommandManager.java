@@ -19,6 +19,10 @@ public abstract class CommandManager {
         this.listeners = new ArrayList<>();
     }
 
+    public CommandRoot getRoot() {
+        return root;
+    }
+
     public void addCommand(CommandNode commandNode) {
         root.child(commandNode);
     }
@@ -98,10 +102,6 @@ public abstract class CommandManager {
                 }
             }
         }
-    }
-
-    public CommandRoot getRoot() {
-        return root;
     }
 
     protected abstract CommandContext buildContext(CommandSender sender, CommandPath path, Arguments arguments);
