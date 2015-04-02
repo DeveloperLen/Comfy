@@ -1,7 +1,7 @@
-package de.rojetto.comfy.argument;
+package me.rojetto.comfy.argument;
 
-import de.rojetto.comfy.CommandArgument;
-import de.rojetto.comfy.exception.CommandArgumentException;
+import me.rojetto.comfy.CommandArgument;
+import me.rojetto.comfy.exception.CommandArgumentException;
 
 public class StringArgument extends CommandArgument {
     public StringArgument(String name) {

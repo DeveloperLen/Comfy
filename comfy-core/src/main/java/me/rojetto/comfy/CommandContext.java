@@ -1,4 +1,4 @@
-package de.rojetto.comfy;
+package me.rojetto.comfy;
 
 public abstract class CommandContext {
     private final CommandSender sender;

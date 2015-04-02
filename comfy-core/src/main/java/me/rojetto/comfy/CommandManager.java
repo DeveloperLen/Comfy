@@ -1,9 +1,9 @@
-package de.rojetto.comfy;
+package me.rojetto.comfy;
 
-import de.rojetto.comfy.exception.CommandArgumentException;
-import de.rojetto.comfy.exception.CommandHandlerException;
-import de.rojetto.comfy.exception.CommandPathException;
-import de.rojetto.comfy.exception.CommandTreeException;
+import me.rojetto.comfy.exception.CommandArgumentException;
+import me.rojetto.comfy.exception.CommandHandlerException;
+import me.rojetto.comfy.exception.CommandPathException;
+import me.rojetto.comfy.exception.CommandTreeException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

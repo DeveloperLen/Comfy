@@ -1,6 +1,6 @@
-package de.rojetto.comfy;
+package me.rojetto.comfy;
 
-import de.rojetto.comfy.exception.CommandArgumentException;
+import me.rojetto.comfy.exception.CommandArgumentException;
 
 public abstract class CommandArgument extends CommandNode {
     private final String name;

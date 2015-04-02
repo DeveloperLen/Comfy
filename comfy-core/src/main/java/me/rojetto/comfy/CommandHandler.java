@@ -1,4 +1,4 @@
-package de.rojetto.comfy;
+package me.rojetto.comfy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

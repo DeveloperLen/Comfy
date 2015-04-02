@@ -1,4 +1,4 @@
-package de.rojetto.comfy.exception;
+package me.rojetto.comfy.exception;
 
 public class CommandHandlerException extends Exception {
     public CommandHandlerException(String msg) {

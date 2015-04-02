@@ -1,7 +1,7 @@
-package de.rojetto.comfy;
+package me.rojetto.comfy;
 
-import de.rojetto.comfy.exception.CommandPathException;
-import de.rojetto.comfy.exception.CommandTreeException;
+import me.rojetto.comfy.exception.CommandPathException;
+import me.rojetto.comfy.exception.CommandTreeException;
 
 import java.util.ArrayList;
 import java.util.Collections;

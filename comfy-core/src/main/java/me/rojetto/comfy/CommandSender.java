@@ -1,4 +1,4 @@
-package de.rojetto.comfy;
+package me.rojetto.comfy;
 
 public interface CommandSender {
     public void warning(String message);

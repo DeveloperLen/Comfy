@@ -1,4 +1,4 @@
-package de.rojetto.comfy;
+package me.rojetto.comfy;
 
 import java.util.HashMap;
 import java.util.Map;
