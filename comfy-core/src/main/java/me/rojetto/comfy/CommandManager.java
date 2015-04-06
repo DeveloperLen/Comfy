@@ -12,11 +12,12 @@ import java.util.*;
 public abstract class CommandManager {
     private final CommandRoot root;
     private final List<CommandListener> listeners;
+    private final Map<String, List<AbstractMap.Entry<Method, CommandListener>>> handlerMethods;
 
     public CommandManager() {
         this.root = new CommandRoot();
-
         this.listeners = new ArrayList<>();
+        this.handlerMethods = new HashMap<>();
     }
 
     public CommandRoot getRoot() {
@@ -33,6 +34,7 @@ public abstract class CommandManager {
 
     public void registerCommands() {
         validateTree();
+        mapHandlerMethods();
         onRegisterCommands();
     }
 
@@ -48,7 +50,7 @@ public abstract class CommandManager {
             if (!path.getLastNode().isExecutable()) {
                 sender.warning("This is no complete command, silly"); // TODO: Be helpful instead
             } else {
-                callHandlerMethod(path.getLastNode().getExecutor(), context);
+                callHandlerMethod(path.getLastNode().getHandler(), context);
             }
         } catch (CommandPathException e) {
             sender.warning(e.getMessage());
@@ -59,21 +61,22 @@ public abstract class CommandManager {
         }
     }
 
-    private void callHandlerMethod(String executor, CommandContext context) throws CommandHandlerException {
-        for (CommandListener listener : listeners) {
-            for (Method method : listener.getClass().getMethods()) {
-                for (CommandHandler annotation : method.getAnnotationsByType(CommandHandler.class)) {
-                    if (annotation != null) {
-                        if (executor.equals(annotation.value())) {
-                            try {
-                                method.invoke(listener, context);
-                            } catch (IllegalAccessException e) {
-                                throw new CommandHandlerException(e.getMessage()); // TODO: Proper messages
-                            } catch (InvocationTargetException e) {
-                                throw new CommandHandlerException(e.getMessage());
-                            }
-                        }
+    private void callHandlerMethod(String handler, CommandContext context) throws CommandHandlerException {
+        if (handlerMethods.containsKey(handler)) {
+            for (AbstractMap.Entry<Method, CommandListener> pair : handlerMethods.get(handler)) {
+                Method method = pair.getKey();
+                CommandListener listener = pair.getValue();
+
+                try {
+                    if (method.getParameterCount() == 0) {
+                        method.invoke(listener);
+                    } else {
+                        method.invoke(listener, context); //TODO: Fix everything about this
                     }
+                } catch (IllegalAccessException e) {
+                    throw new CommandHandlerException(e.getMessage()); //TODO: Proper messages
+                } catch (InvocationTargetException e) {
+                    throw new CommandHandlerException(e.getMessage());
                 }
             }
         }
@@ -102,6 +105,30 @@ public abstract class CommandManager {
                 }
             }
         }
+    }
+
+    private void mapHandlerMethods() throws CommandHandlerException {
+        for (CommandListener listener : listeners) {
+            for (Method method : listener.getClass().getMethods()) {
+                if (method.getAnnotation(CommandHandler.class) != null) {
+                    String executes = method.getAnnotation(CommandHandler.class).value();
+
+                    if (method.getParameterCount() >= 1 && !CommandContext.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        throw new CommandHandlerException("The first argument of a command handler method must be a CommandContext.");
+                    }
+
+                    addHandlerMethod(executes, method, listener);
+                }
+            }
+        }
+    }
+
+    private void addHandlerMethod(String handler, Method method, CommandListener listener) {
+        if (!handlerMethods.containsKey(handler)) {
+            handlerMethods.put(handler, new ArrayList<AbstractMap.Entry<Method, CommandListener>>());
+        }
+
+        handlerMethods.get(handler).add(new AbstractMap.SimpleEntry<>(method, listener));
     }
 
     protected abstract CommandContext buildContext(CommandSender sender, CommandPath path, Arguments arguments);

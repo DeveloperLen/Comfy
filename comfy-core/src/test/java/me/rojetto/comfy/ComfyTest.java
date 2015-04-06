@@ -50,7 +50,6 @@ public class ComfyTest implements CommandListener {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
     }
 
-
     class TestCommandManager extends CommandManager {
         @Override
         protected CommandContext buildContext(CommandSender sender, CommandPath path, Arguments arguments) {

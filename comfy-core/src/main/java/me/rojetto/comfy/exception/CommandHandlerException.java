@@ -1,6 +1,6 @@
 package me.rojetto.comfy.exception;
 
-public class CommandHandlerException extends Exception {
+public class CommandHandlerException extends RuntimeException {
     public CommandHandlerException(String msg) {
         super(msg);
     }

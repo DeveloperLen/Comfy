@@ -1,5 +1,4 @@
 * Pass arguments directly to method parameters
-* Validate (and cache) handler methods
 * Help system?
     * Show paths to next executes on "invalid" command
     * Descriptions
@@ -15,6 +14,7 @@
 * Proper tests
 * Bukkit implementation
 * Bungee implementation?
+* Sponge implementation?
 * Documentation
 
 DONE:
@@ -26,3 +26,4 @@ DONE:
 * Actually match with combined last parameters when reaching a leaf
 * Paths should actually contain nodes
 * Recursive command parsing?
+* Validate (and cache) handler methods

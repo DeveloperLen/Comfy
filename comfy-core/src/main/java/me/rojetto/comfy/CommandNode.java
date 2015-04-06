@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class CommandNode {
     private CommandNode parent;
     private List<CommandNode> children = new ArrayList<>();
-    private String executes;
+    private String handler;
 
     public CommandNode child(CommandNode child) {
         if (child.getParent() != null) {
@@ -24,7 +24,7 @@ public abstract class CommandNode {
     }
 
     public CommandNode executes(String commandHandler) {
-        this.executes = commandHandler;
+        this.handler = commandHandler;
 
         return this;
     }
@@ -78,7 +78,7 @@ public abstract class CommandNode {
     }
 
     public boolean isOptional() {
-        if (executes != null)
+        if (handler != null)
             return false;
 
         for (CommandNode child : children) {
@@ -91,7 +91,7 @@ public abstract class CommandNode {
     }
 
     public boolean isExecutable() {
-        if (executes != null) {
+        if (handler != null) {
             return true;
         } else {
             if (isOptional()) {
@@ -106,12 +106,12 @@ public abstract class CommandNode {
         return children.size() == 0;
     }
 
-    public String getExecutor() {
+    public String getHandler() {
         if (isExecutable()) {
-            if (executes != null) {
-                return executes;
+            if (handler != null) {
+                return handler;
             } else {
-                return parent.getExecutor();
+                return parent.getHandler();
             }
         } else {
             return null;
@@ -149,11 +149,11 @@ public abstract class CommandNode {
     public List<CommandNode> getExecutableNodes(boolean deepSearch) {
         List<CommandNode> nodes = new ArrayList<>();
 
-        if (executes != null) {
+        if (handler != null) {
             nodes.add(this);
         }
 
-        if (deepSearch || executes == null) {
+        if (deepSearch || handler == null) {
             for (CommandNode child : children) {
                 nodes.addAll(child.getExecutableNodes(deepSearch));
             }
