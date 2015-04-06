@@ -1,4 +1,3 @@
-* Pass arguments directly to method parameters
 * Help system?
     * Show paths to next executes on "invalid" command
     * Descriptions
@@ -27,3 +26,4 @@ DONE:
 * Paths should actually contain nodes
 * Recursive command parsing?
 * Validate (and cache) handler methods
+* Pass arguments directly to method parameters

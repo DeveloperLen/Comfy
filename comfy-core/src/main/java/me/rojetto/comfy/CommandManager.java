@@ -7,6 +7,7 @@ import me.rojetto.comfy.exception.CommandTreeException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.*;
 
 public abstract class CommandManager {
@@ -67,12 +68,31 @@ public abstract class CommandManager {
                 Method method = pair.getKey();
                 CommandListener listener = pair.getValue();
 
-                try {
-                    if (method.getParameterCount() == 0) {
-                        method.invoke(listener);
-                    } else {
-                        method.invoke(listener, context); //TODO: Fix everything about this
+                Object[] arguments = new Object[method.getParameterCount()];
+
+                if (method.getParameterCount() > 0) {
+                    arguments[0] = context;
+                }
+
+                if (method.getParameterCount() > 1) {
+                    for (int i = 1; i < method.getParameterCount(); i++) {
+                        Parameter param = method.getParameters()[i];
+                        Arg annotation = param.getAnnotation(Arg.class);
+
+                        if (annotation != null && context.getArguments().exists(annotation.value())) {
+                            Object value = context.getArguments().get(annotation.value());
+
+                            if (!param.getType().isAssignableFrom(value.getClass())) {
+                                throw new CommandHandlerException("Method argument " + annotation.value() + " should be of type " + value.getClass());
+                            }
+
+                            arguments[i] = value;
+                        }
                     }
+                }
+
+                try {
+                    method.invoke(listener, arguments);
                 } catch (IllegalAccessException e) {
                     throw new CommandHandlerException(e.getMessage()); //TODO: Proper messages
                 } catch (InvocationTargetException e) {
@@ -101,7 +121,7 @@ public abstract class CommandManager {
         for (CommandNode executable : root.getExecutableNodes(true)) {
             if (executable.getExecutableNodes(true).size() == 1) { // If it's the last executable in this path
                 if (executable.getLeafNodes().size() > 1) { // and there are branches after this one
-                    throw new CommandTreeException("No branches after last executable in a path allowed.");
+                    throw new CommandTreeException("No branches after last executable node in a path allowed.");
                 }
             }
         }

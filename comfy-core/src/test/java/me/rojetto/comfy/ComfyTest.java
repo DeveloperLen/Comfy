@@ -46,8 +46,9 @@ public class ComfyTest implements CommandListener {
     }
 
     @CommandHandler("optCommand")
-    public void optCommand(TestCommandContext context) {
+    public void optCommand(TestCommandContext context, @Arg("o2") String second_argument) {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
+        System.out.println(second_argument);
     }
 
     class TestCommandManager extends CommandManager {
