@@ -1,5 +1,6 @@
 package me.rojetto.comfy.tree;
 
+import me.rojetto.comfy.CommandContext;
 import me.rojetto.comfy.exception.CommandPathException;
 import me.rojetto.comfy.exception.CommandTreeException;
 
@@ -71,7 +72,7 @@ public abstract class CommandNode {
         }
 
         if (!matchedChild) {
-            throw new CommandPathException("Couldn't match " + segments.get(0) + " to any child node.");
+            throw new CommandPathException("Invalid sub-command or argument: " + segments.get(0));
         }
 
         return path;
@@ -162,8 +163,6 @@ public abstract class CommandNode {
         return nodes;
     }
 
-    public abstract boolean matches(String segmentString);
-
     public CommandNode getParent() {
         return parent;
     }
@@ -171,4 +170,8 @@ public abstract class CommandNode {
     public List<CommandNode> getChildren() {
         return new ArrayList<>(children);
     }
+
+    public abstract boolean matches(String segmentString);
+
+    public abstract List<String> getSuggestions(CommandContext context);
 }

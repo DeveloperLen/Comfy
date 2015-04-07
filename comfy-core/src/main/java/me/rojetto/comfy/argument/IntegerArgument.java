@@ -1,7 +1,10 @@
 package me.rojetto.comfy.argument;
 
+import me.rojetto.comfy.CommandContext;
 import me.rojetto.comfy.exception.CommandArgumentException;
 import me.rojetto.comfy.tree.CommandArgument;
+
+import java.util.List;
 
 public class IntegerArgument extends CommandArgument {
     private boolean checkMin;
@@ -60,5 +63,10 @@ public class IntegerArgument extends CommandArgument {
         }
 
         return true;
+    }
+
+    @Override
+    public List<String> getSuggestions(CommandContext context) {
+        return null;
     }
 }

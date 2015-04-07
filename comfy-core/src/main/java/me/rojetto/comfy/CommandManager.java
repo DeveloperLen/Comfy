@@ -43,19 +43,53 @@ public abstract class CommandManager {
         onRegisterCommands();
     }
 
-    protected void process(CommandSender sender, String commandString) {
-        List<String> segments = Arrays.asList(commandString.split(" "));
+    protected List<String> tabComplete(CommandSender sender, List<String> segments) {
+        List<String> suggestions = new ArrayList<>();
+        List<String> segmentsCopy = new ArrayList<>(segments);
+        String lastSegment = segmentsCopy.remove(segmentsCopy.size() - 1);
+
+        CommandContext context;
 
         try {
-            CommandPath path = root.parsePath(segments, false);
-            Arguments args = path.parseArguments(segments);
+            context = buildContext(sender, segmentsCopy);
+        } catch (CommandPathException e) {
+            sender.warning(e.getMessage());
+            return suggestions;
+        } catch (CommandArgumentException e) {
+            sender.warning(e.getMessage());
+            return suggestions;
+        }
 
-            CommandContext context = buildContext(sender, path, args);
+        // Special case for root node completion, because paths are weird
+        CommandNode lastNode = context.getPath().getNodeList().size() > 0 ? context.getPath().getLastNode() : root;
 
-            if (!path.getLastNode().isExecutable()) {
+        for (CommandNode child : lastNode.getChildren()) {
+            if (child.getSuggestions(context) != null) {
+                suggestions.addAll(child.getSuggestions(context));
+            }
+        }
+
+        Iterator<String> iter = suggestions.iterator();
+        while (iter.hasNext()) {
+            String suggestion = iter.next();
+            if (!suggestion.startsWith(lastSegment)) { // TODO: Ignore case
+                iter.remove();
+            }
+        }
+
+        return suggestions;
+    }
+
+    protected void process(CommandSender sender, String commandString) {
+        List<String> segments = split(commandString);
+
+        try {
+            CommandContext context = buildContext(sender, segments);
+
+            if (!context.getPath().getLastNode().isExecutable()) {
                 sender.warning("This is no complete command, silly"); // TODO: Be helpful instead
             } else {
-                callHandlerMethod(path.getLastNode().getHandler(), context);
+                callHandlerMethod(context.getPath().getLastNode().getHandler(), context);
             }
         } catch (CommandPathException e) {
             sender.warning(e.getMessage());
@@ -66,6 +100,31 @@ public abstract class CommandManager {
         }
     }
 
+    protected List<String> split(String commandString) {
+        List<String> segments = new ArrayList<>();
+        String remaining = commandString;
+
+        while (remaining.indexOf(" ") != -1) {
+            int index = remaining.indexOf(" ");
+            segments.add(remaining.substring(0, index));
+            remaining = remaining.substring(index + 1);
+        }
+
+        segments.add(remaining);
+
+        return segments;
+    }
+
+    // TODO: Clear up confusion about buildContext methods
+    private CommandContext buildContext(CommandSender sender, List<String> segments) throws CommandPathException, CommandArgumentException {
+        CommandPath path = root.parsePath(segments, false);
+        Arguments args = path.parseArguments(segments);
+
+        CommandContext context = buildContext(sender, path, args);
+
+        return context;
+    }
+
     private void callHandlerMethod(String handler, CommandContext context) throws CommandHandlerException {
         if (handlerMethods.containsKey(handler)) {
             for (AbstractMap.Entry<Method, CommandListener> pair : handlerMethods.get(handler)) {
@@ -74,24 +133,22 @@ public abstract class CommandManager {
 
                 Object[] arguments = new Object[method.getParameterCount()];
 
-                if (method.getParameterCount() > 0) {
-                    arguments[0] = context;
-                }
+                for (int i = 0; i < method.getParameterCount(); i++) {
+                    Parameter param = method.getParameters()[i];
+                    Arg annotation = param.getAnnotation(Arg.class);
 
-                if (method.getParameterCount() > 1) {
-                    for (int i = 1; i < method.getParameterCount(); i++) {
-                        Parameter param = method.getParameters()[i];
-                        Arg annotation = param.getAnnotation(Arg.class);
+                    if (annotation != null && context.getArguments().exists(annotation.value())) {
+                        Object value = context.getArguments().get(annotation.value());
 
-                        if (annotation != null && context.getArguments().exists(annotation.value())) {
-                            Object value = context.getArguments().get(annotation.value());
-
-                            if (!param.getType().isAssignableFrom(value.getClass())) {
-                                throw new CommandHandlerException("Method argument " + annotation.value() + " should be of type " + value.getClass());
-                            }
-
-                            arguments[i] = value;
+                        if (!param.getType().isAssignableFrom(value.getClass())) {
+                            throw new CommandHandlerException("Method argument " + annotation.value() + " should be of type " + value.getClass());
                         }
+
+                        arguments[i] = value;
+                    }
+
+                    if (CommandContext.class.isAssignableFrom(param.getType())) {
+                        arguments[i] = context;
                     }
                 }
 
@@ -136,11 +193,6 @@ public abstract class CommandManager {
             for (Method method : listener.getClass().getMethods()) {
                 if (method.getAnnotation(CommandHandler.class) != null) {
                     String executes = method.getAnnotation(CommandHandler.class).value();
-
-                    if (method.getParameterCount() >= 1 && !CommandContext.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                        throw new CommandHandlerException("The first argument of a command handler method must be a CommandContext.");
-                    }
-
                     addHandlerMethod(executes, method, listener);
                 }
             }

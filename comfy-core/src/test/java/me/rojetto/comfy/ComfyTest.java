@@ -5,6 +5,8 @@ import me.rojetto.comfy.tree.CommandPath;
 import me.rojetto.comfy.tree.Literal;
 import org.junit.Test;
 
+import java.util.List;
+
 public class ComfyTest implements CommandListener {
     @Test
     public void test() {
@@ -24,7 +26,8 @@ public class ComfyTest implements CommandListener {
         );
 
         manager.registerCommands();
-        manager.callTestCommand(new ConsoleSender(), "command opt 1 2 3 4");
+        manager.callTestCommand("command opt 1 2 3 4");
+        manager.tabCompleteTest("command ");
     }
 
     @CommandHandler("listCommands")
@@ -48,9 +51,8 @@ public class ComfyTest implements CommandListener {
     }
 
     @CommandHandler("optCommand")
-    public void optCommand(TestCommandContext context, @Arg("o2") String second_argument) {
+    public void optCommand(TestCommandContext context) {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
-        System.out.println(second_argument);
     }
 
     class TestCommandManager extends CommandManager {
@@ -64,8 +66,17 @@ public class ComfyTest implements CommandListener {
 
         }
 
-        public void callTestCommand(CommandSender sender, String commandString) {
-            this.process(sender, commandString);
+        public void callTestCommand(String commandString) {
+            this.process(new ConsoleSender(), commandString);
+        }
+
+        public void tabCompleteTest(String commandString) {
+            List<String> suggestions = null;
+            suggestions = this.tabComplete(new ConsoleSender(), split(commandString));
+
+            for (String suggestion : suggestions) {
+                System.out.print(suggestion + " ");
+            }
         }
     }
 

@@ -1,7 +1,10 @@
 package me.rojetto.comfy.argument;
 
+import me.rojetto.comfy.CommandContext;
 import me.rojetto.comfy.exception.CommandArgumentException;
 import me.rojetto.comfy.tree.CommandArgument;
+
+import java.util.List;
 
 public class StringArgument extends CommandArgument {
     public StringArgument(String name) {
@@ -16,5 +19,10 @@ public class StringArgument extends CommandArgument {
     @Override
     public boolean matches(String segmentString) {
         return true;
+    }
+
+    @Override
+    public List<String> getSuggestions(CommandContext context) {
+        return null;
     }
 }

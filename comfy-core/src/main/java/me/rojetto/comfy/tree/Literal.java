@@ -1,5 +1,6 @@
 package me.rojetto.comfy.tree;
 
+import me.rojetto.comfy.CommandContext;
 import me.rojetto.comfy.exception.CommandTreeException;
 
 import java.util.ArrayList;
@@ -30,6 +31,11 @@ public class Literal extends CommandNode {
         }
 
         return false;
+    }
+
+    @Override
+    public List<String> getSuggestions(CommandContext context) {
+        return Arrays.asList(aliases.get(0));
     }
 
     @Override
