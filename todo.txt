@@ -2,7 +2,6 @@
     * Show paths to next executes on "invalid" command
     * Descriptions
     * Command for showing all executable paths
-* Tab completion
 * Permissions
 * Arguments
     * Floats, (Doubles)
@@ -10,6 +9,7 @@
     * String[]?
     * Enums
 * Flags?
+* Quoting support?
 * Proper tests
 * Bukkit implementation
 * Bungee implementation?
@@ -27,3 +27,4 @@ DONE:
 * Recursive command parsing?
 * Validate (and cache) handler methods
 * Pass arguments directly to method parameters
+* Tab completion
