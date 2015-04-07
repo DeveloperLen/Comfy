@@ -4,6 +4,10 @@ import me.rojetto.comfy.exception.CommandArgumentException;
 import me.rojetto.comfy.exception.CommandHandlerException;
 import me.rojetto.comfy.exception.CommandPathException;
 import me.rojetto.comfy.exception.CommandTreeException;
+import me.rojetto.comfy.tree.CommandArgument;
+import me.rojetto.comfy.tree.CommandNode;
+import me.rojetto.comfy.tree.CommandPath;
+import me.rojetto.comfy.tree.CommandRoot;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

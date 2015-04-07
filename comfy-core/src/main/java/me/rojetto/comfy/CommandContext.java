@@ -1,5 +1,7 @@
 package me.rojetto.comfy;
 
+import me.rojetto.comfy.tree.CommandPath;
+
 public abstract class CommandContext {
     private final CommandSender sender;
     private final CommandPath path;

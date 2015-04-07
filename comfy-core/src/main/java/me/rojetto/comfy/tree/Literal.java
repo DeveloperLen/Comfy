@@ -1,4 +1,4 @@
-package me.rojetto.comfy;
+package me.rojetto.comfy.tree;
 
 import me.rojetto.comfy.exception.CommandTreeException;
 

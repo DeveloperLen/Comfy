@@ -1,4 +1,4 @@
-package me.rojetto.comfy;
+package me.rojetto.comfy.tree;
 
 public class CommandRoot extends CommandNode {
     @Override

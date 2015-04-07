@@ -1,5 +1,6 @@
-package me.rojetto.comfy;
+package me.rojetto.comfy.tree;
 
+import me.rojetto.comfy.Arguments;
 import me.rojetto.comfy.exception.CommandArgumentException;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public class CommandPath {
         this.nodeList = nodeList;
     }
 
-    protected Arguments parseArguments(List<String> segments) throws CommandArgumentException {
+    public Arguments parseArguments(List<String> segments) throws CommandArgumentException {
         Map<String, Object> argumentMap = new HashMap<>();
 
         for (int i = 0; i < segments.size(); i++) {

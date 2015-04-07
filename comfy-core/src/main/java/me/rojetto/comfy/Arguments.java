@@ -6,7 +6,7 @@ import java.util.Map;
 public class Arguments {
     private final Map<String, Object> argumentMap;
 
-    protected Arguments(Map<String, Object> argumentMap) {
+    public Arguments(Map<String, Object> argumentMap) {
         this.argumentMap = argumentMap;
     }
 

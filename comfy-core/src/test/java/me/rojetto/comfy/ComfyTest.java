@@ -1,6 +1,8 @@
 package me.rojetto.comfy;
 
 import me.rojetto.comfy.argument.StringArgument;
+import me.rojetto.comfy.tree.CommandPath;
+import me.rojetto.comfy.tree.Literal;
 import org.junit.Test;
 
 public class ComfyTest implements CommandListener {

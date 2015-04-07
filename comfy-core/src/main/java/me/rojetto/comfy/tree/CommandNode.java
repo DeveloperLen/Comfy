@@ -1,4 +1,4 @@
-package me.rojetto.comfy;
+package me.rojetto.comfy.tree;
 
 import me.rojetto.comfy.exception.CommandPathException;
 import me.rojetto.comfy.exception.CommandTreeException;
@@ -29,7 +29,7 @@ public abstract class CommandNode {
         return this;
     }
 
-    protected CommandPath parsePath(List<String> segments, boolean returnIncompletePath) throws CommandPathException {
+    public CommandPath parsePath(List<String> segments, boolean returnIncompletePath) throws CommandPathException {
         List<String> segmentsCopy = new ArrayList<>(segments);
 
         if (segmentsCopy.size() == 0) {
