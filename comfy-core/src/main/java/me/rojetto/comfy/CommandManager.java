@@ -140,16 +140,20 @@ public abstract class CommandManager {
                     if (annotation != null && context.getArguments().exists(annotation.value())) {
                         Object value = context.getArguments().get(annotation.value());
 
-                        if (!param.getType().isAssignableFrom(value.getClass())) {
-                            throw new CommandHandlerException("Method argument " + annotation.value() + " should be of type " + value.getClass());
+                        if (!valueTypeFitsParameterType(value.getClass(), param.getType())) {
+                            throw new CommandHandlerException("Method argument " + annotation.value() + " should be of type " + value.getClass().getName());
                         }
 
                         arguments[i] = value;
+                        continue;
                     }
 
                     if (CommandContext.class.isAssignableFrom(param.getType())) {
                         arguments[i] = context;
+                        continue;
                     }
+
+                    arguments[i] = null;
                 }
 
                 try {
@@ -161,6 +165,30 @@ public abstract class CommandManager {
                 }
             }
         }
+    }
+
+    private boolean valueTypeFitsParameterType(Class valueType, Class parameterType) {
+        boolean fits = false;
+
+        if (parameterType.isAssignableFrom(valueType)) {
+            fits = true;
+        }
+
+        Map<Class, Class> primitiveTypes = new HashMap<>();
+        primitiveTypes.put(Byte.class, byte.class);
+        primitiveTypes.put(Short.class, short.class);
+        primitiveTypes.put(Integer.class, int.class);
+        primitiveTypes.put(Long.class, long.class);
+        primitiveTypes.put(Float.class, float.class);
+        primitiveTypes.put(Double.class, double.class);
+        primitiveTypes.put(Boolean.class, boolean.class);
+        primitiveTypes.put(Character.class, char.class);
+
+        if (primitiveTypes.get(valueType) == parameterType) {
+            fits = true;
+        }
+
+        return fits;
     }
 
     private void validateTree() throws CommandTreeException {

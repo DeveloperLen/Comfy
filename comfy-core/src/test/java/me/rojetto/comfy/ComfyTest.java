@@ -1,5 +1,6 @@
 package me.rojetto.comfy;
 
+import me.rojetto.comfy.argument.IntegerArgument;
 import me.rojetto.comfy.argument.StringArgument;
 import me.rojetto.comfy.tree.CommandPath;
 import me.rojetto.comfy.tree.Literal;
@@ -18,7 +19,7 @@ public class ComfyTest implements CommandListener {
                                 .child(new StringArgument("text").executes("msgCommand")))
                         .child(new Literal("opt")
                                 .child(new StringArgument("r1").executes("optCommand")
-                                        .child(new StringArgument("o1")
+                                        .child(new IntegerArgument("o1")
                                                 .child(new StringArgument("o2")))))
                         .child(new StringArgument("name")
                                 .child(new Literal("add").executes("addCommand"))
@@ -51,7 +52,7 @@ public class ComfyTest implements CommandListener {
     }
 
     @CommandHandler("optCommand")
-    public void optCommand(TestCommandContext context) {
+    public void optCommand(TestCommandContext context, @Arg("o1") int what) {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
     }
 
