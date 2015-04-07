@@ -5,29 +5,29 @@ import me.rojetto.comfy.exception.CommandArgumentException;
 
 import java.util.List;
 
-public class IntegerArgument extends RangedNumberArgument {
-    public IntegerArgument(String name) {
+public class DoubleArgument extends RangedNumberArgument {
+    public DoubleArgument(String name) {
         super(name);
     }
 
     @Override
     protected Object parse(String argument) throws CommandArgumentException {
-        int integer;
+        double number;
 
         try {
-            integer = Integer.parseInt(argument);
+            number = Double.parseDouble(argument);
         } catch (NumberFormatException e) {
-            throw new CommandArgumentException(argument + " is not a valid integer.");
+            throw new CommandArgumentException(argument + " is not a valid floating point number.");
         }
 
-        checkRange(integer);
-        return integer;
+        checkRange(number);
+        return number;
     }
 
     @Override
     public boolean matches(String segmentString) {
         try {
-            Integer.parseInt(segmentString);
+            Double.parseDouble(segmentString);
         } catch (NumberFormatException e) {
             return false;
         }

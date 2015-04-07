@@ -4,10 +4,11 @@
     * Command for showing all executable paths
 * Permissions
 * Arguments
-    * Floats, (Doubles)
-    * Booleans
+    * Floats, (Doubles) - DONE
+    * Booleans - DONE
     * String[]?
     * Enums
+* Output the argument parsing exceptions properly
 * Flags?
 * Quoting support?
 * Proper tests

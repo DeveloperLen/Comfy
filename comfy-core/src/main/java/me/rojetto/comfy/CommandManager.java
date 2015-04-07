@@ -72,7 +72,7 @@ public abstract class CommandManager {
         Iterator<String> iter = suggestions.iterator();
         while (iter.hasNext()) {
             String suggestion = iter.next();
-            if (!suggestion.startsWith(lastSegment)) { // TODO: Ignore case
+            if (!suggestion.matches("(?i)" + lastSegment + ".*")) { // Starts "lastSegment", case insensitive
                 iter.remove();
             }
         }

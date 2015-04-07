@@ -1,5 +1,6 @@
 package me.rojetto.comfy;
 
+import me.rojetto.comfy.argument.BooleanArgument;
 import me.rojetto.comfy.argument.IntegerArgument;
 import me.rojetto.comfy.argument.StringArgument;
 import me.rojetto.comfy.tree.CommandPath;
@@ -21,14 +22,15 @@ public class ComfyTest implements CommandListener {
                                 .child(new StringArgument("r1").executes("optCommand")
                                         .child(new IntegerArgument("o1")
                                                 .child(new StringArgument("o2")))))
+                        .child(new Literal("bool")
+                                .child(new BooleanArgument("boolean").executes("bool")))
                         .child(new StringArgument("name")
                                 .child(new Literal("add").executes("addCommand"))
                                 .child(new Literal("remove").executes("removeCommand")))
         );
 
         manager.registerCommands();
-        manager.callTestCommand("command opt 1 2 3 4");
-        manager.tabCompleteTest("command ");
+        manager.callTestCommand("command bool what");
     }
 
     @CommandHandler("listCommands")
@@ -53,6 +55,11 @@ public class ComfyTest implements CommandListener {
 
     @CommandHandler("optCommand")
     public void optCommand(TestCommandContext context, @Arg("o1") int what) {
+        context.getSender().info(context.getPath() + "; " + context.getArguments());
+    }
+
+    @CommandHandler("bool")
+    public void bool(TestCommandContext context) {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
     }
 
