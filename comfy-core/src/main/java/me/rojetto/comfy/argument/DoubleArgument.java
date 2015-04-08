@@ -11,13 +11,13 @@ public class DoubleArgument extends RangedNumberArgument<Double> {
     }
 
     @Override
-    protected Double parse(String argument) throws CommandArgumentException {
+    public Double parse(String segment) throws CommandArgumentException {
         double number;
 
         try {
-            number = Double.parseDouble(argument);
+            number = Double.parseDouble(segment);
         } catch (NumberFormatException e) {
-            throw new CommandArgumentException(argument + " is not a valid floating point number.");
+            throw new CommandArgumentException("'" + segment + "' is not a valid floating point number.");
         }
 
         checkRange(number);
@@ -25,9 +25,9 @@ public class DoubleArgument extends RangedNumberArgument<Double> {
     }
 
     @Override
-    public boolean matches(String segmentString) {
+    public boolean matches(String segment) {
         try {
-            Double.parseDouble(segmentString);
+            Double.parseDouble(segment);
         } catch (NumberFormatException e) {
             return false;
         }

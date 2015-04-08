@@ -4,10 +4,7 @@ import me.rojetto.comfy.CommandContext;
 import me.rojetto.comfy.exception.CommandArgumentException;
 import me.rojetto.comfy.tree.CommandArgument;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EnumArgument extends CommandArgument<Enum> {
     private final Map<String, Enum> enumMap;
@@ -37,14 +34,29 @@ public class EnumArgument extends CommandArgument<Enum> {
     }
 
     @Override
-    protected Enum parse(String argument) throws CommandArgumentException {
+    public Enum parse(String segment) throws CommandArgumentException {
         for (String enumName : enumMap.keySet()) {
-            if (enumName.equalsIgnoreCase(argument)) {
+            if (enumName.equalsIgnoreCase(segment)) {
                 return enumMap.get(enumName);
             }
         }
 
-        throw new CommandArgumentException(argument + " is not a valid option.");
+        StringBuilder options = new StringBuilder();
+
+        Iterator<String> iter = enumMap.keySet().iterator();
+        while (iter.hasNext()) {
+            options.append(iter.next());
+            if (iter.hasNext()) {
+                options.append("|");
+            }
+        }
+
+        throw new CommandArgumentException("'" + segment + "' is not a valid option. Suggestions: " + options.toString());
+    }
+
+    @Override
+    public boolean matches(String segment) {
+        return true;
     }
 
     @Override

@@ -12,8 +12,8 @@ public class StringArgument extends CommandArgument<String> {
     }
 
     @Override
-    protected String parse(String argument) throws CommandArgumentException {
-        return argument;
+    public String parse(String segment) throws CommandArgumentException {
+        return segment;
     }
 
     @Override

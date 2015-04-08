@@ -11,13 +11,13 @@ public class FloatArgument extends RangedNumberArgument<Float> {
     }
 
     @Override
-    protected Float parse(String argument) throws CommandArgumentException {
+    public Float parse(String segment) throws CommandArgumentException {
         float number;
 
         try {
-            number = Float.parseFloat(argument);
+            number = Float.parseFloat(segment);
         } catch (NumberFormatException e) {
-            throw new CommandArgumentException(argument + " is not a valid floating point number.");
+            throw new CommandArgumentException("'" + segment + "' is not a valid floating point number.");
         }
 
         checkRange(number);
@@ -25,9 +25,9 @@ public class FloatArgument extends RangedNumberArgument<Float> {
     }
 
     @Override
-    public boolean matches(String segmentString) {
+    public boolean matches(String segment) {
         try {
-            Float.parseFloat(segmentString);
+            Float.parseFloat(segment);
         } catch (NumberFormatException e) {
             return false;
         }

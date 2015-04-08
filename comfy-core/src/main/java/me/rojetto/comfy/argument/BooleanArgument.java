@@ -22,16 +22,16 @@ public class BooleanArgument extends CommandArgument<Boolean> {
     }
 
     @Override
-    protected Boolean parse(String argument) throws CommandArgumentException {
+    public Boolean parse(String segment) throws CommandArgumentException {
         for (boolean key : booleanNames.keySet()) {
             for (String alias : booleanNames.get(key)) {
-                if (alias.equalsIgnoreCase(argument)) {
+                if (alias.equalsIgnoreCase(segment)) {
                     return key;
                 }
             }
         }
 
-        throw new CommandArgumentException(argument + " is not a valid boolean.");
+        throw new CommandArgumentException("'" + segment + "' is not a valid boolean.");
     }
 
     @Override

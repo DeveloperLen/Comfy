@@ -11,13 +11,13 @@ public class IntegerArgument extends RangedNumberArgument<Integer> {
     }
 
     @Override
-    protected Integer parse(String argument) throws CommandArgumentException {
+    public Integer parse(String segment) throws CommandArgumentException {
         int integer;
 
         try {
-            integer = Integer.parseInt(argument);
+            integer = Integer.parseInt(segment);
         } catch (NumberFormatException e) {
-            throw new CommandArgumentException(argument + " is not a valid integer.");
+            throw new CommandArgumentException("'" + segment + "' is not a valid integer.");
         }
 
         checkRange(integer);
@@ -25,9 +25,9 @@ public class IntegerArgument extends RangedNumberArgument<Integer> {
     }
 
     @Override
-    public boolean matches(String segmentString) {
+    public boolean matches(String segment) {
         try {
-            Integer.parseInt(segmentString);
+            Integer.parseInt(segment);
         } catch (NumberFormatException e) {
             return false;
         }

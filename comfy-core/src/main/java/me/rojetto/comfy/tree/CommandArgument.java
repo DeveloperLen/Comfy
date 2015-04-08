@@ -37,5 +37,5 @@ public abstract class CommandArgument<T> extends CommandNode {
         return true;
     }
 
-    abstract protected T parse(String argument) throws CommandArgumentException;
+    abstract public T parse(String segment) throws CommandArgumentException;
 }
