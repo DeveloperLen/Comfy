@@ -33,7 +33,7 @@ public class ComfyTest implements CommandListener {
         );
 
         manager.registerCommands();
-        manager.callTestCommand("command enum one");
+        manager.callTestCommand("command opt one 2");
     }
 
     @CommandHandler("listCommands")

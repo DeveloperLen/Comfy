@@ -3,7 +3,7 @@ package me.rojetto.comfy.tree;
 import me.rojetto.comfy.exception.CommandArgumentException;
 import me.rojetto.comfy.exception.CommandTreeException;
 
-public abstract class CommandArgument extends CommandNode {
+public abstract class CommandArgument<T> extends CommandNode {
     private final String name;
 
     protected CommandArgument(String name) {
@@ -37,5 +37,5 @@ public abstract class CommandArgument extends CommandNode {
         return true;
     }
 
-    abstract protected Object parse(String argument) throws CommandArgumentException;
+    abstract protected T parse(String argument) throws CommandArgumentException;
 }

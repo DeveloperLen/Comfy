@@ -3,7 +3,7 @@ package me.rojetto.comfy.argument;
 import me.rojetto.comfy.exception.CommandArgumentException;
 import me.rojetto.comfy.tree.CommandArgument;
 
-public abstract class RangedNumberArgument extends CommandArgument {
+public abstract class RangedNumberArgument<T extends Number> extends CommandArgument<Number> {
     private boolean checkMin;
     private double min;
     private boolean checkMax;

@@ -5,13 +5,13 @@ import me.rojetto.comfy.exception.CommandArgumentException;
 
 import java.util.List;
 
-public class DoubleArgument extends RangedNumberArgument {
+public class DoubleArgument extends RangedNumberArgument<Double> {
     public DoubleArgument(String name) {
         super(name);
     }
 
     @Override
-    protected Object parse(String argument) throws CommandArgumentException {
+    protected Double parse(String argument) throws CommandArgumentException {
         double number;
 
         try {

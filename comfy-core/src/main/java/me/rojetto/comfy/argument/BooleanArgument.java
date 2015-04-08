@@ -6,7 +6,7 @@ import me.rojetto.comfy.tree.CommandArgument;
 
 import java.util.*;
 
-public class BooleanArgument extends CommandArgument {
+public class BooleanArgument extends CommandArgument<Boolean> {
     private final Map<Boolean, String[]> booleanNames;
 
     public BooleanArgument(String name) {
@@ -22,7 +22,7 @@ public class BooleanArgument extends CommandArgument {
     }
 
     @Override
-    protected Object parse(String argument) throws CommandArgumentException {
+    protected Boolean parse(String argument) throws CommandArgumentException {
         for (boolean key : booleanNames.keySet()) {
             for (String alias : booleanNames.get(key)) {
                 if (alias.equalsIgnoreCase(argument)) {

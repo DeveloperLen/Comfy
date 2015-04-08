@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EnumArgument extends CommandArgument {
+public class EnumArgument extends CommandArgument<Enum> {
     private final Map<String, Enum> enumMap;
 
     public EnumArgument(String name, Map<String, Enum> enumMap) {
@@ -37,7 +37,7 @@ public class EnumArgument extends CommandArgument {
     }
 
     @Override
-    protected Object parse(String argument) throws CommandArgumentException {
+    protected Enum parse(String argument) throws CommandArgumentException {
         for (String enumName : enumMap.keySet()) {
             if (enumName.equalsIgnoreCase(argument)) {
                 return enumMap.get(enumName);
