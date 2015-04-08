@@ -61,7 +61,7 @@ public abstract class CommandManager {
         }
 
         // Special case for root node completion, because paths are weird
-        CommandNode lastNode = context.getPath().getNodeList().size() > 0 ? context.getPath().getLastNode() : root;
+        CommandNode lastNode = context.getPath().getLastNode() != null ? context.getPath().getLastNode() : root;
 
         for (CommandNode child : lastNode.getChildren()) {
             if (child.getSuggestions(context) != null) {
@@ -80,6 +80,52 @@ public abstract class CommandManager {
         return suggestions;
     }
 
+    protected void help(CommandSender sender, List<String> segments) {
+        try {
+            CommandPath path = root.parsePath(segments, true);
+            CommandNode lastNode = path.getLastNode() != null ? path.getLastNode() : root;
+
+            Set<CommandNode> helpfulNodes = new HashSet<>();
+
+            helpfulNodes.addAll(lastNode.getNodesWithTag("handler", true));
+            helpfulNodes.addAll(lastNode.getNodesWithTag("description", true));
+
+            helpfulNodes.remove(lastNode); // We want help for things AFTER the last node
+
+            boolean changedSet = true;
+            while (changedSet) {
+                changedSet = false;
+                for (CommandNode node : new HashSet<>(helpfulNodes)) { // For each node (clone the set to avoid concurrent modification)
+                    if (!node.hasTag("handler")) { // Check if it's just a "category"
+                        Iterator<CommandNode> iter = helpfulNodes.iterator();
+                        while (iter.hasNext()) { // If it is, loop through all the nodes
+                            if (node.hasChild(iter.next())) { // And if they fall in this category
+                                iter.remove(); // Remove them from the list
+                                changedSet = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (CommandNode node : helpfulNodes) {
+                String line = node.getLastOptional().getPath().toString();
+
+                if (!node.hasTag("handler")) {
+                    line += " ...";
+                }
+
+                if (node.hasTag("description")) {
+                    line += " - " + node.getTag("description");
+                }
+
+                sender.info(line);
+            }
+        } catch (CommandPathException e) {
+            sender.warning(e.getMessage());
+        }
+    }
+
     protected void process(CommandSender sender, String commandString) {
         List<String> segments = split(commandString);
 
@@ -87,12 +133,14 @@ public abstract class CommandManager {
             CommandContext context = buildContext(sender, segments);
 
             if (!context.getPath().getLastNode().isExecutable()) {
-                sender.warning("This is no complete command, silly"); // TODO: Be helpful instead
+                sender.warning("This is not a complete command.");
+                help(sender, segments);
             } else {
                 callHandlerMethod(context.getPath().getLastNode().getHandler(), context);
             }
         } catch (CommandPathException e) {
-            sender.warning(e.getMessage()); // TODO: Send help
+            sender.warning(e.getMessage());
+            help(sender, segments);
         } catch (CommandArgumentException e) {
             sender.warning(e.getMessage());
         } catch (CommandHandlerException e) {
@@ -208,7 +256,7 @@ public abstract class CommandManager {
         }
 
         for (CommandNode executable : root.getExecutableNodes(true)) {
-            if (executable.getExecutableNodes(true).size() == 1) { // If it's the last executable in this path
+            if (executable.isLastExecutable()) { // If it's the last executable in this path
                 if (executable.getLeafNodes().size() > 1) { // and there are branches after this one
                     throw new CommandTreeException("No branches after last executable node in a path allowed.");
                 }

@@ -4,14 +4,12 @@ import me.rojetto.comfy.CommandContext;
 import me.rojetto.comfy.exception.CommandPathException;
 import me.rojetto.comfy.exception.CommandTreeException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public abstract class CommandNode {
     private CommandNode parent;
     private List<CommandNode> children = new ArrayList<>();
-    private String handler;
+    private Map<String, String> tags = new HashMap<>();
 
     public CommandNode child(CommandNode child) {
         if (child.getParent() != null) {
@@ -24,8 +22,14 @@ public abstract class CommandNode {
         return this;
     }
 
-    public CommandNode executes(String commandHandler) {
-        this.handler = commandHandler;
+    public CommandNode executes(String handler) {
+        tags.put("handler", handler);
+
+        return this;
+    }
+
+    public CommandNode description(String description) {
+        tags.put("description", description);
 
         return this;
     }
@@ -71,15 +75,39 @@ public abstract class CommandNode {
             }
         }
 
-        if (!matchedChild) {
+        if (!matchedChild && !returnIncompletePath) {
             throw new CommandPathException("Invalid sub-command or argument: " + segments.get(0));
         }
 
         return path;
     }
 
+    public boolean hasTag(String tag) {
+        return tags.containsKey(tag);
+    }
+
+    public String getTag(String tag) {
+        return tags.get(tag);
+    }
+
+    public List<CommandNode> getNodesWithTag(String tag, boolean deep) {
+        List<CommandNode> nodes = new ArrayList<>();
+
+        if (hasTag(tag)) {
+            nodes.add(this);
+        }
+
+        if (deep || !hasTag(tag)) {
+            for (CommandNode child : children) {
+                nodes.addAll(child.getNodesWithTag(tag, deep));
+            }
+        }
+
+        return nodes;
+    }
+
     public boolean isOptional() {
-        if (handler != null)
+        if (hasTag("handler"))
             return false;
 
         for (CommandNode child : children) {
@@ -92,7 +120,7 @@ public abstract class CommandNode {
     }
 
     public boolean isExecutable() {
-        if (handler != null) {
+        if (hasTag("handler")) {
             return true;
         } else {
             if (isOptional()) {
@@ -103,14 +131,18 @@ public abstract class CommandNode {
         }
     }
 
+    public boolean isLastExecutable() {
+        return getNodesWithTag("handler", true).size() == 1 && getNodesWithTag("handler", true).get(0) == this;
+    }
+
     public boolean isLeaf() {
         return children.size() == 0;
     }
 
     public String getHandler() {
         if (isExecutable()) {
-            if (handler != null) {
-                return handler;
+            if (hasTag("handler")) {
+                return getTag("handler");
             } else {
                 return parent.getHandler();
             }
@@ -147,20 +179,34 @@ public abstract class CommandNode {
         return leafNodes;
     }
 
-    public List<CommandNode> getExecutableNodes(boolean deepSearch) {
-        List<CommandNode> nodes = new ArrayList<>();
+    public List<CommandNode> getExecutableNodes(boolean deep) {
+        return getNodesWithTag("handler", deep);
+    }
 
-        if (handler != null) {
-            nodes.add(this);
+    public CommandNode getLastOptional() {
+        if (isLeaf()) {
+            return this;
         }
 
-        if (deepSearch || handler == null) {
-            for (CommandNode child : children) {
-                nodes.addAll(child.getExecutableNodes(deepSearch));
+        if (isLastExecutable() || isOptional()) {
+            return getLeafNodes().get(0);
+        }
+
+        return this;
+    }
+
+    public boolean hasChild(CommandNode node) {
+        for (CommandNode child : children) {
+            if (child == node) {
+                return true;
+            }
+
+            if (child.hasChild(node)) {
+                return true;
             }
         }
 
-        return nodes;
+        return false;
     }
 
     public CommandNode getParent() {

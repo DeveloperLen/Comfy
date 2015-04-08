@@ -15,7 +15,7 @@ public class ComfyTest implements CommandListener {
     public void test() {
         TestCommandManager manager = new TestCommandManager();
         manager.addListener(this);
-        manager.addCommand(new Literal("command", "c")
+        manager.addCommand(new Literal("command", "c").description("Complicated test commands")
                         .child(new Literal("list").executes("listCommands"))
                         .child(new Literal("message", "msg")
                                 .child(new StringArgument("text").executes("msgCommand")))
@@ -26,14 +26,19 @@ public class ComfyTest implements CommandListener {
                         .child(new Literal("bool")
                                 .child(new BooleanArgument("boolean").executes("bool")))
                         .child(new Literal("enum")
-                                .child(new EnumArgument("enumeration", TestEnum.values(), new String[]{"one", "two", "three"}).executes("enum")))
-                        .child(new StringArgument("name")
+                                .child(new EnumArgument("enumeration", TestEnum.values(), new String[]{"one", "two", "three"}).executes("enum").description("Enum command")))
+                        .child(new StringArgument("name").description("All name commands")
                                 .child(new Literal("add").executes("addCommand"))
                                 .child(new Literal("remove").executes("removeCommand")))
         );
 
+        manager.addCommand(new Literal("desc").description("All desc commands")
+                .child(new Literal("sub1").description("Sub category 1")
+                        .child(new Literal("ex1").executes("ex1").description("Executes 1"))
+                        .child(new Literal("ex2").executes("ex2").description("Executes 2")))
+                .child(new Literal("ex3").executes("ex3").description("Executes 3")));
+
         manager.registerCommands();
-        manager.callTestCommand("command enum one");
     }
 
     @CommandHandler("listCommands")

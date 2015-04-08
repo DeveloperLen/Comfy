@@ -1,7 +1,9 @@
 * Help system?
     * Show paths to next executes on "invalid" command
     * Descriptions
-    * Command for showing all executable paths
+    * Command for showing all executable paths, "?" after last segment
+    * Help sorting
+* Refine tag system
 * Permissions
 * Flags?
 * Quoting support?
