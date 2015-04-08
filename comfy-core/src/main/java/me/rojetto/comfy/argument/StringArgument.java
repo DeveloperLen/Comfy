@@ -17,11 +17,6 @@ public class StringArgument extends CommandArgument {
     }
 
     @Override
-    public boolean matches(String segmentString) {
-        return true;
-    }
-
-    @Override
     public List<String> getSuggestions(CommandContext context) {
         return null;
     }

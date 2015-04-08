@@ -23,9 +23,9 @@ public class Literal extends CommandNode {
     }
 
     @Override
-    public boolean matches(String segmentString) {
+    public boolean matches(String segment) {
         for (String alias : aliases) {
-            if (alias.equalsIgnoreCase(segmentString)) {
+            if (alias.equalsIgnoreCase(segment)) {
                 return true;
             }
         }

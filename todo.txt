@@ -7,7 +7,7 @@
     * Floats, (Doubles) - DONE
     * Booleans - DONE
     * String[]?
-    * Enums
+    * Enums - DONE
 * Output the argument parsing exceptions properly
 * Flags?
 * Quoting support?

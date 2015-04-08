@@ -1,6 +1,7 @@
 package me.rojetto.comfy;
 
 import me.rojetto.comfy.argument.BooleanArgument;
+import me.rojetto.comfy.argument.EnumArgument;
 import me.rojetto.comfy.argument.IntegerArgument;
 import me.rojetto.comfy.argument.StringArgument;
 import me.rojetto.comfy.tree.CommandPath;
@@ -24,13 +25,15 @@ public class ComfyTest implements CommandListener {
                                                 .child(new StringArgument("o2")))))
                         .child(new Literal("bool")
                                 .child(new BooleanArgument("boolean").executes("bool")))
+                        .child(new Literal("enum")
+                                .child(new EnumArgument("enumeration", TestEnum.values(), new String[]{"one", "two", "three"}).executes("enum")))
                         .child(new StringArgument("name")
                                 .child(new Literal("add").executes("addCommand"))
                                 .child(new Literal("remove").executes("removeCommand")))
         );
 
         manager.registerCommands();
-        manager.callTestCommand("command bool what");
+        manager.callTestCommand("command enum one");
     }
 
     @CommandHandler("listCommands")
@@ -54,12 +57,17 @@ public class ComfyTest implements CommandListener {
     }
 
     @CommandHandler("optCommand")
-    public void optCommand(TestCommandContext context, @Arg("o1") int what) {
+    public void optCommand(TestCommandContext context) {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
     }
 
     @CommandHandler("bool")
     public void bool(TestCommandContext context) {
+        context.getSender().info(context.getPath() + "; " + context.getArguments());
+    }
+
+    @CommandHandler("enum")
+    public void enumCommand(TestCommandContext context) {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
     }
 
@@ -104,5 +112,9 @@ public class ComfyTest implements CommandListener {
         public void info(String message) {
             System.out.println("[info] " + message);
         }
+    }
+
+    enum TestEnum {
+        OPTION_ONE, OPTION_TWO, OPTION_THREE;
     }
 }

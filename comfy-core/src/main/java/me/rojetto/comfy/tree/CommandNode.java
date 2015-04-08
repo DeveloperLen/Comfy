@@ -171,7 +171,7 @@ public abstract class CommandNode {
         return new ArrayList<>(children);
     }
 
-    public abstract boolean matches(String segmentString);
+    public abstract boolean matches(String segment);
 
     public abstract List<String> getSuggestions(CommandContext context);
 }

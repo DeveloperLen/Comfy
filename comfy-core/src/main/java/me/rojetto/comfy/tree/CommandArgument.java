@@ -6,7 +6,7 @@ import me.rojetto.comfy.exception.CommandTreeException;
 public abstract class CommandArgument extends CommandNode {
     private final String name;
 
-    public CommandArgument(String name) {
+    protected CommandArgument(String name) {
         this.name = name;
 
         if (!name.matches("[A-Za-z0-9]+")) {
@@ -25,6 +25,16 @@ public abstract class CommandArgument extends CommandNode {
 
     public String getName() {
         return name;
+    }
+
+    public boolean matches(String segment) {
+        try {
+            parse(segment);
+        } catch (CommandArgumentException e) {
+            return false;
+        }
+
+        return true;
     }
 
     abstract protected Object parse(String argument) throws CommandArgumentException;

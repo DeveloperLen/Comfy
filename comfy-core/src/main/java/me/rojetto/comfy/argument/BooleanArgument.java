@@ -35,17 +35,6 @@ public class BooleanArgument extends CommandArgument {
     }
 
     @Override
-    public boolean matches(String segmentString) {
-        try {
-            parse(segmentString);
-        } catch (CommandArgumentException e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
     public List<String> getSuggestions(CommandContext context) {
         List<String> suggestions = new ArrayList<>();
         suggestions.addAll(Arrays.asList(booleanNames.get(true)));
