@@ -50,7 +50,11 @@ public class CommandPath {
     }
 
     public CommandNode getLastNode() {
-        return nodeList.get(nodeList.size() - 1);
+        if (nodeList.size() > 0) {
+            return nodeList.get(nodeList.size() - 1);
+        } else {
+            return null;
+        }
     }
 
     public List<CommandNode> getNodeList() {

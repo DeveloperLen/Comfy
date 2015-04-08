@@ -3,12 +3,6 @@
     * Descriptions
     * Command for showing all executable paths
 * Permissions
-* Arguments
-    * Floats, (Doubles) - DONE
-    * Booleans - DONE
-    * String[]?
-    * Enums - DONE
-* Output the argument parsing exceptions properly
 * Flags?
 * Quoting support?
 * Proper tests
@@ -29,3 +23,8 @@ DONE:
 * Validate (and cache) handler methods
 * Pass arguments directly to method parameters
 * Tab completion
+* Arguments
+    * Floats, Doubles
+    * Booleans
+    * Enums
+* Output the argument parsing exceptions properly

@@ -72,7 +72,7 @@ public abstract class CommandManager {
         Iterator<String> iter = suggestions.iterator();
         while (iter.hasNext()) {
             String suggestion = iter.next();
-            if (!suggestion.matches("(?i)" + lastSegment + ".*")) { // Starts "lastSegment", case insensitive
+            if (!suggestion.matches("(?i)" + lastSegment + ".*")) { // Starts with "lastSegment", case insensitive
                 iter.remove();
             }
         }
@@ -92,7 +92,7 @@ public abstract class CommandManager {
                 callHandlerMethod(context.getPath().getLastNode().getHandler(), context);
             }
         } catch (CommandPathException e) {
-            sender.warning(e.getMessage());
+            sender.warning(e.getMessage()); // TODO: Send help
         } catch (CommandArgumentException e) {
             sender.warning(e.getMessage());
         } catch (CommandHandlerException e) {
