@@ -1,5 +1,3 @@
-* Refine tag system
-* Permissions
 * Flags?
 * Quoting support?
 * Proper tests
@@ -30,3 +28,5 @@ DONE:
     * Descriptions
     * Command for showing all executable paths, "?" after last segment
     * Help sorting
+* Refine tag system
+* Permissions

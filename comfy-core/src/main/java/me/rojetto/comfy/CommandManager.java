@@ -51,7 +51,7 @@ public abstract class CommandManager {
         CommandContext context;
 
         try {
-            context = buildContext(sender, segmentsCopy);
+            context = parseSegments(sender, segmentsCopy);
         } catch (CommandPathException e) {
             return suggestions;
         } catch (CommandArgumentException e) {
@@ -140,7 +140,7 @@ public abstract class CommandManager {
         }
 
         try {
-            CommandContext context = buildContext(sender, segments);
+            CommandContext context = parseSegments(sender, segments);
 
             if (!context.getPath().getLastNode().isExecutable()) {
                 sender.warning("This is not a complete command.");
@@ -177,8 +177,7 @@ public abstract class CommandManager {
         return segments;
     }
 
-    // TODO: Clear up confusion about buildContext methods
-    private CommandContext buildContext(CommandSender sender, List<String> segments) throws CommandPathException, CommandArgumentException {
+    private CommandContext parseSegments(CommandSender sender, List<String> segments) throws CommandPathException, CommandArgumentException {
         CommandPath path = root.parsePath(segments, false);
         Arguments args = path.parseArguments(segments);
 
@@ -221,7 +220,7 @@ public abstract class CommandManager {
                 try {
                     method.invoke(listener, arguments);
                 } catch (IllegalAccessException e) {
-                    throw new CommandHandlerException(e.getMessage()); //TODO: Proper messages
+                    throw new CommandHandlerException(e.getMessage());
                 } catch (InvocationTargetException e) {
                     throw new CommandHandlerException(e.getMessage());
                 }
