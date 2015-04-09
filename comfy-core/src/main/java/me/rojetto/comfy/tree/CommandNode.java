@@ -76,7 +76,7 @@ public abstract class CommandNode {
         }
 
         if (!matchedChild && !returnIncompletePath) {
-            throw new CommandPathException("Invalid sub-command or argument: " + segments.get(0));
+            throw new CommandPathException("Invalid sub-command or argument: '" + segments.get(0) + "'");
         }
 
         return path;

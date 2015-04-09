@@ -1,7 +1,11 @@
 package me.rojetto.comfy;
 
-public interface CommandSender {
-    public void warning(String message);
+import me.rojetto.comfy.tree.CommandPath;
 
-    public void info(String message);
+public interface CommandSender {
+    void warning(String message);
+
+    void info(String message);
+
+    void pathHelp(CommandPath path);
 }

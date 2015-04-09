@@ -4,6 +4,7 @@ import me.rojetto.comfy.argument.BooleanArgument;
 import me.rojetto.comfy.argument.EnumArgument;
 import me.rojetto.comfy.argument.IntegerArgument;
 import me.rojetto.comfy.argument.StringArgument;
+import me.rojetto.comfy.tree.CommandNode;
 import me.rojetto.comfy.tree.CommandPath;
 import me.rojetto.comfy.tree.Literal;
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class ComfyTest implements CommandListener {
                 .child(new Literal("ex3").executes("ex3").description("Executes 3")));
 
         manager.registerCommands();
+        manager.callTestCommand("desc ");
     }
 
     @CommandHandler("listCommands")
@@ -116,6 +118,24 @@ public class ComfyTest implements CommandListener {
         @Override
         public void info(String message) {
             System.out.println("[info] " + message);
+        }
+
+        @Override
+        public void pathHelp(CommandPath path) {
+            CommandNode lastNode = path.getLastNode();
+            if (lastNode == null) {
+                return;
+            }
+
+            String line = "[path] " + path;
+            if (!lastNode.hasTag("handler")) {
+                line += " ...";
+            }
+            if (lastNode.hasTag("description")) {
+                line += " - " + lastNode.getTag("description");
+            }
+
+            System.out.println(line);
         }
     }
 

@@ -107,17 +107,7 @@ public abstract class CommandManager {
             }
 
             for (CommandNode node : helpfulNodes) {
-                String line = node.getLastOptional().getPath().toString();
-
-                if (!node.hasTag("handler")) {
-                    line += " ...";
-                }
-
-                if (node.hasTag("description")) {
-                    line += " - " + node.getTag("description");
-                }
-
-                sender.info(line);
+                sender.pathHelp(node.getPath());
             }
         } catch (CommandPathException e) {
             sender.warning(e.getMessage());
