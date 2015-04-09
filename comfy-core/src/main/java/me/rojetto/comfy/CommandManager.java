@@ -106,8 +106,15 @@ public abstract class CommandManager {
                 }
             }
 
+            List<CommandPath> paths = new ArrayList<>();
             for (CommandNode node : helpfulNodes) {
-                sender.pathHelp(node.getPath());
+                paths.add(node.getPath());
+            }
+
+            // TODO: Sort the paths
+
+            for (CommandPath helpfulPath : paths) {
+                sender.pathHelp(helpfulPath);
             }
         } catch (CommandPathException e) {
             sender.warning(e.getMessage());
