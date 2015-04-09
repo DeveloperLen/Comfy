@@ -8,4 +8,6 @@ public interface CommandSender {
     void info(String message);
 
     void pathHelp(CommandPath path);
+
+    boolean hasPermission(String permission);
 }

@@ -34,6 +34,12 @@ public abstract class CommandNode {
         return this;
     }
 
+    public CommandNode permission(String permission) {
+        tags.put("permission", permission);
+
+        return this;
+    }
+
     public CommandPath parsePath(List<String> segments, boolean returnIncompletePath) throws CommandPathException {
         List<String> segmentsCopy = new ArrayList<>(segments);
 
@@ -48,7 +54,7 @@ public abstract class CommandNode {
             StringBuilder segment = new StringBuilder();
             boolean lastNode;
 
-            if (child.isLeaf()) { // If this is an end point, give it all of the remaining segments
+            if (child.isLeaf() && child instanceof CommandArgument) { // If this is a leaf argument, give it all of the remaining segments
                 for (int i = 0; i < segments.size(); i++) {
                     segment.append(segments.get(i));
                     if (i < segments.size() - 1) {
@@ -104,6 +110,22 @@ public abstract class CommandNode {
         }
 
         return nodes;
+    }
+
+    public boolean hasDescription() {
+        return hasTag("description");
+    }
+
+    public String getDescription() {
+        return getTag("description");
+    }
+
+    public boolean hasPermission() {
+        return hasTag("permission");
+    }
+
+    public String getPermission() {
+        return getTag("permission");
     }
 
     public boolean isOptional() {
@@ -210,7 +232,7 @@ public abstract class CommandNode {
     }
 
     public boolean isCategory() {
-        return !isExecutable() && hasTag("description");
+        return !isExecutable() && hasDescription();
     }
 
     public CommandNode getParent() {

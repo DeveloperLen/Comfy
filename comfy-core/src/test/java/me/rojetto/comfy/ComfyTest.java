@@ -16,7 +16,7 @@ public class ComfyTest implements CommandListener {
     public void test() {
         TestCommandManager manager = new TestCommandManager();
         manager.addListener(this);
-        manager.addCommand(new Literal("command", "c").description("Complicated test commands").executes("command")
+        manager.addCommand(new Literal("command", "c").description("Complicated test commands").executes("command").permission("yes")
                         .child(new Literal("list").executes("listCommands"))
                         .child(new Literal("message", "msg")
                                 .child(new StringArgument("text").executes("msgCommand")))
@@ -42,7 +42,7 @@ public class ComfyTest implements CommandListener {
                 .child(new Literal("ex3").executes("ex3").description("Executes 3")));
 
         manager.registerCommands();
-        manager.callTestCommand("?");
+        manager.callTestCommand("command list hey");
     }
 
     @CommandHandler("listCommands")
@@ -133,11 +133,16 @@ public class ComfyTest implements CommandListener {
             if (!lastNode.isExecutable()) {
                 line += " ...";
             }
-            if (lastNode.hasTag("description")) {
-                line += " - " + lastNode.getTag("description");
+            if (lastNode.hasDescription()) {
+                line += " - " + lastNode.getDescription();
             }
 
             System.out.println(line);
+        }
+
+        @Override
+        public boolean hasPermission(String permission) {
+            return permission.equals("yes");
         }
     }
 

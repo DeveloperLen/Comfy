@@ -113,7 +113,13 @@ public abstract class CommandManager {
                 paths.add(node.getLastOptional().getPath());
             }
 
-            // TODO: Sort the paths
+            Iterator<CommandPath> iter = paths.iterator();
+            while (iter.hasNext()) {
+                if (!iter.next().checkPermission(sender)) {
+                    iter.remove();
+                }
+            }
+
             Collections.sort(paths);
 
             for (CommandPath helpfulPath : paths) {
@@ -140,7 +146,11 @@ public abstract class CommandManager {
                 sender.warning("This is not a complete command.");
                 help(sender, segments);
             } else {
-                callHandlerMethod(context.getPath().getLastNode().getHandler(), context);
+                if (context.getPath().checkPermission(sender)) {
+                    callHandlerMethod(context.getPath().getLastNode().getHandler(), context);
+                } else {
+                    sender.warning("You do not have permission to execute this command.");
+                }
             }
         } catch (CommandPathException e) {
             sender.warning(e.getMessage());

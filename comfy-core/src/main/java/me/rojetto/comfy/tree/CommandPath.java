@@ -1,6 +1,7 @@
 package me.rojetto.comfy.tree;
 
 import me.rojetto.comfy.Arguments;
+import me.rojetto.comfy.CommandSender;
 import me.rojetto.comfy.exception.CommandArgumentException;
 
 import java.util.HashMap;
@@ -59,6 +60,16 @@ public class CommandPath implements Comparable<CommandPath> {
 
     public List<CommandNode> getNodeList() {
         return nodeList;
+    }
+
+    public boolean checkPermission(CommandSender sender) {
+        for (CommandNode node : nodeList) {
+            if (node.hasPermission() && !sender.hasPermission(node.getPermission())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
