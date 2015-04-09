@@ -53,10 +53,8 @@ public abstract class CommandManager {
         try {
             context = buildContext(sender, segmentsCopy);
         } catch (CommandPathException e) {
-            sender.warning(e.getMessage());
             return suggestions;
         } catch (CommandArgumentException e) {
-            sender.warning(e.getMessage());
             return suggestions;
         }
 
