@@ -16,7 +16,7 @@ public class ComfyTest implements CommandListener {
     public void test() {
         TestCommandManager manager = new TestCommandManager();
         manager.addListener(this);
-        manager.addCommand(new Literal("command", "c").description("Complicated test commands")
+        manager.addCommand(new Literal("command", "c").description("Complicated test commands").executes("command")
                         .child(new Literal("list").executes("listCommands"))
                         .child(new Literal("message", "msg")
                                 .child(new StringArgument("text").executes("msgCommand")))
@@ -28,6 +28,8 @@ public class ComfyTest implements CommandListener {
                                 .child(new BooleanArgument("boolean").executes("bool")))
                         .child(new Literal("enum")
                                 .child(new EnumArgument("enumeration", TestEnum.values(), new String[]{"one", "two", "three"}).executes("enum").description("Enum command")))
+                        .child(new Literal("multi").executes("multi").description("Is not the last in this path")
+                                .child(new Literal("exe").executes("exe")))
                         .child(new StringArgument("name").description("All name commands")
                                 .child(new Literal("add").executes("addCommand"))
                                 .child(new Literal("remove").executes("removeCommand")))
@@ -40,7 +42,7 @@ public class ComfyTest implements CommandListener {
                 .child(new Literal("ex3").executes("ex3").description("Executes 3")));
 
         manager.registerCommands();
-        manager.callTestCommand("desc ");
+        manager.callTestCommand("?");
     }
 
     @CommandHandler("listCommands")
@@ -128,7 +130,7 @@ public class ComfyTest implements CommandListener {
             }
 
             String line = "[path] " + path;
-            if (!lastNode.hasTag("handler")) {
+            if (!lastNode.isExecutable()) {
                 line += " ...";
             }
             if (lastNode.hasTag("description")) {

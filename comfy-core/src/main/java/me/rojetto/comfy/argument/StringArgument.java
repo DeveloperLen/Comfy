@@ -17,6 +17,11 @@ public class StringArgument extends CommandArgument<String> {
     }
 
     @Override
+    public boolean matches(String segment) {
+        return segment.matches(".+");
+    }
+
+    @Override
     public List<String> getSuggestions(CommandContext context) {
         return null;
     }

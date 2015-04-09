@@ -88,7 +88,9 @@ public abstract class CommandManager {
             helpfulNodes.addAll(lastNode.getNodesWithTag("handler", true));
             helpfulNodes.addAll(lastNode.getNodesWithTag("description", true));
 
-            helpfulNodes.remove(lastNode); // We want help for things AFTER the last node
+            if (lastNode.isCategory()) {
+                helpfulNodes.remove(lastNode); // We want help for things AFTER the last node
+            }
 
             boolean changedSet = true;
             while (changedSet) {
@@ -108,10 +110,11 @@ public abstract class CommandManager {
 
             List<CommandPath> paths = new ArrayList<>();
             for (CommandNode node : helpfulNodes) {
-                paths.add(node.getPath());
+                paths.add(node.getLastOptional().getPath());
             }
 
             // TODO: Sort the paths
+            Collections.sort(paths);
 
             for (CommandPath helpfulPath : paths) {
                 sender.pathHelp(helpfulPath);
@@ -123,6 +126,12 @@ public abstract class CommandManager {
 
     protected void process(CommandSender sender, String commandString) {
         List<String> segments = split(commandString);
+
+        if (segments.size() > 0 && segments.get(segments.size() - 1).equals("?")) {
+            segments.remove(segments.size() - 1);
+            help(sender, segments);
+            return;
+        }
 
         try {
             CommandContext context = buildContext(sender, segments);

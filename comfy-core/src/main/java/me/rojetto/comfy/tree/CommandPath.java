@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CommandPath {
+public class CommandPath implements Comparable<CommandPath> {
     private final List<CommandNode> nodeList;
 
     protected CommandPath(List<CommandNode> nodeList) {
@@ -74,5 +74,33 @@ public class CommandPath {
         }
 
         return builder.toString();
+    }
+
+    @Override
+    public int compareTo(CommandPath o) {
+        if (o.getLastNode() == getLastNode()) {
+            return 0;
+        }
+
+        for (int i = 0; i < Math.min(nodeList.size(), o.getNodeList().size()); i++) {
+            CommandNode myNode = nodeList.get(i);
+            CommandNode otherNode = o.getNodeList().get(i);
+
+            if (myNode != otherNode) {
+                if (!myNode.isCategory() && otherNode.isCategory()) {
+                    return 1;
+                } else if (myNode.isCategory() && !otherNode.isCategory()) {
+                    return -1;
+                } else {
+                    return myNode.getParent().getChildren().indexOf(myNode) - otherNode.getParent().getChildren().indexOf(otherNode);
+                }
+            }
+
+            if (i == Math.min(nodeList.size(), o.getNodeList().size()) - 1) {
+                return nodeList.size() - o.getNodeList().size();
+            }
+        }
+
+        return -1;
     }
 }

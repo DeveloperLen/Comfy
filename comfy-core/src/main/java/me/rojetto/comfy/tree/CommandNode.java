@@ -209,6 +209,10 @@ public abstract class CommandNode {
         return false;
     }
 
+    public boolean isCategory() {
+        return !isExecutable() && hasTag("description");
+    }
+
     public CommandNode getParent() {
         return parent;
     }
