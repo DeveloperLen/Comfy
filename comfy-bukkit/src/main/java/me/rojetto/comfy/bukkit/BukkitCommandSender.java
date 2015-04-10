@@ -38,7 +38,7 @@ public class BukkitCommandSender implements CommandSender {
             return;
         }
 
-        String line = (isPlayer() ? ChatColor.GREEN.toString() : "Path: ") + path;
+        String line = (isPlayer() ? ChatColor.GREEN.toString() + "/" : "Path: ") + path;
         if (!lastNode.isExecutable()) {
             line += " ...";
         }

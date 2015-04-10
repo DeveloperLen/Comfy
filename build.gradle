@@ -3,7 +3,7 @@ subprojects {
     apply plugin: "maven"
 
     group = "me.rojetto.comfy"
-    version = "0.1"
+    version = "1.0-SNAPSHOT"
 
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
