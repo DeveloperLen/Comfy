@@ -47,6 +47,7 @@ public class BukkitCommandManager extends CommandManager<BukkitCommandContext, B
                 pluginCommand.setExecutor(executor);
                 pluginCommand.setTabCompleter(completer);
                 pluginCommand.setAliases(literal.getAliases());
+                pluginCommand.setUsage("/" + literal.getLabel() + " ?");
                 if (literal.hasDescription()) {
                     pluginCommand.setDescription(literal.getDescription());
                 }
