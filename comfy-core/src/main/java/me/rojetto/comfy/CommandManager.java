@@ -124,6 +124,10 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
 
             Collections.sort(paths);
 
+            if (paths.size() > 0) {
+                sender.info("Help for '" + lastNode.getPath() + "':");
+            }
+
             for (CommandPath helpfulPath : paths) {
                 sender.pathHelp(helpfulPath);
             }

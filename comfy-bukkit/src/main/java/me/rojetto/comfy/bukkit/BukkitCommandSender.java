@@ -28,7 +28,7 @@ public class BukkitCommandSender implements CommandSender {
 
     @Override
     public void info(String message) {
-        sender.sendMessage((isPlayer() ? ChatColor.BLUE.toString() : "Info: ") + message);
+        sender.sendMessage((isPlayer() ? ChatColor.GRAY.toString() : "Info: ") + message);
     }
 
     @Override
@@ -38,12 +38,12 @@ public class BukkitCommandSender implements CommandSender {
             return;
         }
 
-        String line = (isPlayer() ? ChatColor.GREEN.toString() + "/" : "Path: ") + path;
+        String line = (isPlayer() ? ChatColor.GOLD.toString() + "/" : "Path: ") + path;
         if (!lastNode.isExecutable()) {
             line += " ...";
         }
         if (lastNode.hasDescription()) {
-            line += (isPlayer() ? ChatColor.AQUA + " " : " - ") + lastNode.getDescription();
+            line += (isPlayer() ? ": " + ChatColor.WHITE : " - ") + lastNode.getDescription();
         }
 
         sender.sendMessage(line);

@@ -55,7 +55,7 @@ public class BukkitCommandManager extends CommandManager<BukkitCommandContext, B
                     pluginCommand.setPermission(literal.getPermission());
                 }
 
-                map.register(plugin.getName().toLowerCase(), pluginCommand); // TODO: Is this the right prefix?
+                map.register(plugin.getName(), pluginCommand);
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();

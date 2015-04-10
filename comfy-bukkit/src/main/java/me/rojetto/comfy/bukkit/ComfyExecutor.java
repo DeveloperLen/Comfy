@@ -14,7 +14,7 @@ public class ComfyExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        String line = label;
+        String line = command.getLabel();
         for (String arg : args) {
             line += " " + arg;
         }
