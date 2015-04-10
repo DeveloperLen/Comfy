@@ -1,5 +1,3 @@
-apply plugin: "idea"
-
 dependencies {
     testCompile "junit:junit:4.12"
 }

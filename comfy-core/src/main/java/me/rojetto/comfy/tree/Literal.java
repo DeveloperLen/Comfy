@@ -22,6 +22,17 @@ public class Literal extends CommandNode {
         }
     }
 
+    public String getLabel() {
+        return aliases.get(0);
+    }
+
+    public List<String> getAliases() {
+        List<String> aliasList = new ArrayList<>(aliases);
+        aliasList.remove(0);
+
+        return aliasList;
+    }
+
     @Override
     public boolean matches(String segment) {
         for (String alias : aliases) {

@@ -1,5 +1,7 @@
 package me.rojetto.comfy;
 
+import me.rojetto.comfy.annotation.Arg;
+import me.rojetto.comfy.annotation.CommandHandler;
 import me.rojetto.comfy.exception.CommandArgumentException;
 import me.rojetto.comfy.exception.CommandHandlerException;
 import me.rojetto.comfy.exception.CommandPathException;
@@ -14,7 +16,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-public abstract class CommandManager {
+public abstract class CommandManager<C extends CommandContext, S extends CommandSender> {
     private final CommandRoot root;
     private final List<CommandListener> listeners;
     private final Map<String, List<AbstractMap.Entry<Method, CommandListener>>> handlerMethods;
@@ -43,12 +45,12 @@ public abstract class CommandManager {
         onRegisterCommands();
     }
 
-    protected List<String> tabComplete(CommandSender sender, List<String> segments) {
+    public List<String> tabComplete(S sender, List<String> segments) {
         List<String> suggestions = new ArrayList<>();
         List<String> segmentsCopy = new ArrayList<>(segments);
         String lastSegment = segmentsCopy.remove(segmentsCopy.size() - 1);
 
-        CommandContext context;
+        C context;
 
         try {
             context = parseSegments(sender, segmentsCopy);
@@ -78,7 +80,7 @@ public abstract class CommandManager {
         return suggestions;
     }
 
-    protected void help(CommandSender sender, List<String> segments) {
+    public void help(S sender, List<String> segments) {
         try {
             CommandPath path = root.parsePath(segments, true);
             CommandNode lastNode = path.getLastNode() != null ? path.getLastNode() : root;
@@ -130,7 +132,7 @@ public abstract class CommandManager {
         }
     }
 
-    protected void process(CommandSender sender, String commandString) {
+    public void process(S sender, String commandString) {
         List<String> segments = split(commandString);
 
         if (segments.size() > 0 && segments.get(segments.size() - 1).equals("?")) {
@@ -140,7 +142,7 @@ public abstract class CommandManager {
         }
 
         try {
-            CommandContext context = parseSegments(sender, segments);
+            C context = parseSegments(sender, segments);
 
             if (!context.getPath().getLastNode().isExecutable()) {
                 sender.warning("This is not a complete command.");
@@ -177,16 +179,16 @@ public abstract class CommandManager {
         return segments;
     }
 
-    private CommandContext parseSegments(CommandSender sender, List<String> segments) throws CommandPathException, CommandArgumentException {
+    private C parseSegments(S sender, List<String> segments) throws CommandPathException, CommandArgumentException {
         CommandPath path = root.parsePath(segments, false);
         Arguments args = path.parseArguments(segments);
 
-        CommandContext context = buildContext(sender, path, args);
+        C context = buildContext(sender, path, args);
 
         return context;
     }
 
-    private void callHandlerMethod(String handler, CommandContext context) throws CommandHandlerException {
+    private void callHandlerMethod(String handler, C context) throws CommandHandlerException {
         if (handlerMethods.containsKey(handler)) {
             for (AbstractMap.Entry<Method, CommandListener> pair : handlerMethods.get(handler)) {
                 Method method = pair.getKey();
@@ -296,7 +298,7 @@ public abstract class CommandManager {
         handlerMethods.get(handler).add(new AbstractMap.SimpleEntry<>(method, listener));
     }
 
-    protected abstract CommandContext buildContext(CommandSender sender, CommandPath path, Arguments arguments);
+    protected abstract C buildContext(S sender, CommandPath path, Arguments arguments);
 
     protected abstract void onRegisterCommands();
 }

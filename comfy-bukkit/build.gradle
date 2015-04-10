@@ -1,5 +1,3 @@
-apply plugin: "idea"
-
 dependencies {
     compile project(":comfy-core")
     compile "org.bukkit:bukkit:1.8-R0.1-SNAPSHOT"

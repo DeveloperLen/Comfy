@@ -1,5 +1,6 @@
 package me.rojetto.comfy;
 
+import me.rojetto.comfy.annotation.CommandHandler;
 import me.rojetto.comfy.argument.BooleanArgument;
 import me.rojetto.comfy.argument.EnumArgument;
 import me.rojetto.comfy.argument.IntegerArgument;
@@ -80,9 +81,9 @@ public class ComfyTest implements CommandListener {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
     }
 
-    class TestCommandManager extends CommandManager {
+    class TestCommandManager extends CommandManager<TestCommandContext, ConsoleSender> {
         @Override
-        protected CommandContext buildContext(CommandSender sender, CommandPath path, Arguments arguments) {
+        protected TestCommandContext buildContext(ConsoleSender sender, CommandPath path, Arguments arguments) {
             return new TestCommandContext(sender, path, arguments);
         }
 
@@ -105,8 +106,8 @@ public class ComfyTest implements CommandListener {
         }
     }
 
-    class TestCommandContext extends CommandContext {
-        protected TestCommandContext(CommandSender sender, CommandPath path, Arguments arguments) {
+    class TestCommandContext extends CommandContext<ConsoleSender> {
+        protected TestCommandContext(ConsoleSender sender, CommandPath path, Arguments arguments) {
             super(sender, path, arguments);
         }
     }

@@ -1,11 +1,16 @@
 subprojects {
     apply plugin: "java"
+    apply plugin: "maven"
+
+    group = "me.rojetto.comfy"
+    version = "0.1"
 
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
     repositories {
         mavenCentral()
+        mavenLocal()
         maven { url "https://hub.spigotmc.org/nexus/content/groups/public/" }
     }
 }
