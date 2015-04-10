@@ -43,7 +43,6 @@ public class ComfyTest implements CommandListener {
                 .child(new Literal("ex3").executes("ex3").description("Executes 3")));
 
         manager.registerCommands();
-        manager.callTestCommand("command list hey");
     }
 
     @CommandHandler("listCommands")

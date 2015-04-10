@@ -63,9 +63,9 @@ public class CommandPath implements Comparable<CommandPath> {
     }
 
     public boolean checkPermission(CommandSender sender) {
-        for (CommandNode node : nodeList) {
-            if (node.hasPermission() && !sender.hasPermission(node.getPermission())) {
-                return false;
+        for (int i = nodeList.size() - 1; i >= 0; i--) {
+            if (nodeList.get(i).hasPermission()) {
+                return sender.hasPermission(nodeList.get(i).getPermission());
             }
         }
 
