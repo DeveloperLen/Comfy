@@ -168,21 +168,29 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
         }
     }
 
-    protected List<String> split(String commandString) { // TODO: Special character escaping
+    protected List<String> split(String commandString) {
         List<String> segments = new ArrayList<>();
         boolean inQuotes = false;
+        boolean escape = false;
         String segment = "";
         for (int i = 0; i < commandString.length(); i++) {
             char c = commandString.charAt(i);
-            if (c == '"') {
-                inQuotes = !inQuotes;
-            } else {
-                if (c == ' ' && !inQuotes) {
-                    segments.add(segment);
-                    segment = "";
+            if (!escape) {
+                if (c == '\\') {
+                    escape = true;
+                } else if (c == '"') {
+                    inQuotes = !inQuotes;
                 } else {
-                    segment += c;
+                    if (c == ' ' && !inQuotes) {
+                        segments.add(segment);
+                        segment = "";
+                    } else {
+                        segment += c;
+                    }
                 }
+            } else {
+                segment += c;
+                escape = false;
             }
         }
         segments.add(segment);

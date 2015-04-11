@@ -1,5 +1,4 @@
 * Flags?
-* Quoting support?
 * Proper tests
 * Bukkit implementation
 * Bungee implementation?
