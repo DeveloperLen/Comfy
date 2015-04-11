@@ -64,7 +64,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
         CommandNode lastNode = context.getPath().getLastNode() != null ? context.getPath().getLastNode() : root;
 
         for (CommandNode child : lastNode.getChildren()) {
-            if (child.getSuggestions(context) != null) {
+            if (child.getSuggestions(context) != null && child.getPath().checkPermission(sender)) {
                 suggestions.addAll(child.getSuggestions(context));
             }
         }
