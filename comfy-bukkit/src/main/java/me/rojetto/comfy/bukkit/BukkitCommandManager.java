@@ -10,16 +10,15 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 public class BukkitCommandManager extends CommandManager<BukkitCommandContext, BukkitCommandSender> {
-    private final JavaPlugin plugin;
+    private final Plugin plugin;
 
-    public BukkitCommandManager(JavaPlugin plugin) {
+    public BukkitCommandManager(Plugin plugin) {
         this.plugin = plugin;
     }
 

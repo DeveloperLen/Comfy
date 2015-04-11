@@ -1,3 +1,4 @@
+* Decoupling argument types from tree (for flags)
 * Flags?
 * Proper tests
 * Bukkit implementation
@@ -29,3 +30,4 @@ DONE:
     * Help sorting
 * Refine tag system
 * Permissions
+* Quoting support
