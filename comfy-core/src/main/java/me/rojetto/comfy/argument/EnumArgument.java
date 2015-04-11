@@ -16,15 +16,15 @@ public class EnumArgument<T extends Enum> extends CommandArgument<T> {
     }
 
     public EnumArgument(String name, T[] enumValues, String[] names) {
-        this(name, (Map<String, T>) makeEnumMap(enumValues, names));
+        this(name, EnumArgument.makeEnumMap(enumValues, names));
     }
 
-    public static Map<String, Enum> makeEnumMap(Enum[] enumValues, String[] names) throws IllegalArgumentException {
+    public static <T extends Enum> Map<String, T> makeEnumMap(T[] enumValues, String[] names) throws IllegalArgumentException {
         if (enumValues.length != names.length) {
             throw new IllegalArgumentException("The number of enum values and names has to be the same.");
         }
 
-        Map<String, Enum> enumMap = new HashMap<>();
+        Map<String, T> enumMap = new HashMap<>();
 
         for (int i = 0; i < names.length; i++) {
             enumMap.put(names[i], enumValues[i]);
