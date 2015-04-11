@@ -11,9 +11,9 @@ import me.rojetto.comfy.tree.CommandNode;
 import me.rojetto.comfy.tree.CommandPath;
 import me.rojetto.comfy.tree.CommandRoot;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.*;
 
 public abstract class CommandManager<C extends CommandContext, S extends CommandSender> {
@@ -213,16 +213,24 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
                 Method method = pair.getKey();
                 CommandListener listener = pair.getValue();
 
-                Object[] arguments = new Object[method.getParameterCount()];
+                int parameterCount = method.getParameterTypes().length;
+                Object[] arguments = new Object[parameterCount];
 
-                for (int i = 0; i < method.getParameterCount(); i++) {
-                    Parameter param = method.getParameters()[i];
-                    Arg annotation = param.getAnnotation(Arg.class);
+                for (int i = 0; i < parameterCount; i++) {
+                    Arg annotation = null;
+
+                    for (Annotation a : method.getParameterAnnotations()[i]) {
+                        if (a instanceof Arg) {
+                            annotation = (Arg) a;
+                        }
+                    }
+
+                    Class parameterType = method.getParameterTypes()[i];
 
                     if (annotation != null && context.getArguments().exists(annotation.value())) {
                         Object value = context.getArguments().get(annotation.value());
 
-                        if (!valueTypeFitsParameterType(value.getClass(), param.getType())) {
+                        if (!valueTypeFitsParameterType(value.getClass(), parameterType)) {
                             throw new CommandHandlerException("Method argument " + annotation.value() + " should be of type " + value.getClass().getName());
                         }
 
@@ -230,12 +238,12 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
                         continue;
                     }
 
-                    if (CommandContext.class.isAssignableFrom(param.getType())) {
+                    if (CommandContext.class.isAssignableFrom(parameterType)) {
                         arguments[i] = context;
                         continue;
                     }
 
-                    arguments[i] = getDefaultValue(param.getType());
+                    arguments[i] = getDefaultValue(parameterType);
                 }
 
                 try {
