@@ -125,7 +125,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
             Collections.sort(paths);
 
             if (paths.size() > 0) {
-                sender.info("Help for '" + lastNode.getPath() + "':");
+                sender.info("Showing help for '" + lastNode.getPath() + "':");
             }
 
             for (CommandPath helpfulPath : paths) {
@@ -168,17 +168,24 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
         }
     }
 
-    protected List<String> split(String commandString) {
+    protected List<String> split(String commandString) { // TODO: Special character escaping
         List<String> segments = new ArrayList<>();
-        String remaining = commandString;
-
-        while (remaining.indexOf(" ") != -1) {
-            int index = remaining.indexOf(" ");
-            segments.add(remaining.substring(0, index));
-            remaining = remaining.substring(index + 1);
+        boolean inQuotes = false;
+        String segment = "";
+        for (int i = 0; i < commandString.length(); i++) {
+            char c = commandString.charAt(i);
+            if (c == '"') {
+                inQuotes = !inQuotes;
+            } else {
+                if (c == ' ' && !inQuotes) {
+                    segments.add(segment);
+                    segment = "";
+                } else {
+                    segment += c;
+                }
+            }
         }
-
-        segments.add(remaining);
+        segments.add(segment);
 
         return segments;
     }
