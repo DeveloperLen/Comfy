@@ -235,7 +235,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
                         continue;
                     }
 
-                    arguments[i] = null;
+                    arguments[i] = getDefaultValue(param.getType());
                 }
 
                 try {
@@ -247,6 +247,20 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
                 }
             }
         }
+    }
+
+    private Object getDefaultValue(Class aClass) {
+        Map<Class, Object> defaultValues = new HashMap<>();
+        defaultValues.put(byte.class, (byte) 0);
+        defaultValues.put(short.class, (short) 0);
+        defaultValues.put(int.class, (int) 0);
+        defaultValues.put(long.class, (long) 0);
+        defaultValues.put(float.class, (float) 0);
+        defaultValues.put(double.class, (double) 0);
+        defaultValues.put(boolean.class, (boolean) false);
+        defaultValues.put(char.class, (char) 0);
+
+        return defaultValues.get(aClass);
     }
 
     private boolean valueTypeFitsParameterType(Class valueType, Class parameterType) {

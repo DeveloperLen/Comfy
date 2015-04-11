@@ -1,5 +1,6 @@
 package me.rojetto.comfy;
 
+import me.rojetto.comfy.annotation.Arg;
 import me.rojetto.comfy.annotation.CommandHandler;
 import me.rojetto.comfy.argument.BooleanArgument;
 import me.rojetto.comfy.argument.EnumArgument;
@@ -41,12 +42,13 @@ public class ComfyTest implements CommandListener {
                         .child(new Literal("ex1").executes("ex1").description("Executes 1"))
                         .child(new Literal("ex2").executes("ex2").description("Executes 2")))
                 .child(new Literal("ex3").executes("ex3").description("Executes 3")));
-
         manager.registerCommands();
+
+        manager.callTestCommand("c list");
     }
 
     @CommandHandler("listCommands")
-    public void testCommandHandler(TestCommandContext context) {
+    public void testCommandHandler(TestCommandContext context, @Arg("booleanValue") String myBoolean) {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
     }
 
