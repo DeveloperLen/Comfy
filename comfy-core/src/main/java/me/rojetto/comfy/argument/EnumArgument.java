@@ -6,17 +6,17 @@ import me.rojetto.comfy.tree.CommandArgument;
 
 import java.util.*;
 
-public class EnumArgument extends CommandArgument<Enum> {
-    private final Map<String, Enum> enumMap;
+public class EnumArgument<T extends Enum> extends CommandArgument<T> {
+    private final Map<String, T> enumMap;
 
-    public EnumArgument(String name, Map<String, Enum> enumMap) {
+    public EnumArgument(String name, Map<String, T> enumMap) {
         super(name);
 
         this.enumMap = enumMap;
     }
 
-    public EnumArgument(String name, Enum[] enumValues, String[] names) {
-        this(name, EnumArgument.makeEnumMap(enumValues, names));
+    public EnumArgument(String name, T[] enumValues, String[] names) {
+        this(name, (Map<String, T>) makeEnumMap(enumValues, names));
     }
 
     public static Map<String, Enum> makeEnumMap(Enum[] enumValues, String[] names) throws IllegalArgumentException {
@@ -34,7 +34,7 @@ public class EnumArgument extends CommandArgument<Enum> {
     }
 
     @Override
-    public Enum parse(String segment) throws CommandArgumentException {
+    public T parse(String segment) throws CommandArgumentException {
         for (String enumName : enumMap.keySet()) {
             if (enumName.equalsIgnoreCase(segment)) {
                 return enumMap.get(enumName);
