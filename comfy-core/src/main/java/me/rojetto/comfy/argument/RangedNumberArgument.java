@@ -1,17 +1,15 @@
 package me.rojetto.comfy.argument;
 
-import me.rojetto.comfy.exception.CommandArgumentException;
-import me.rojetto.comfy.tree.CommandArgument;
+import me.rojetto.comfy.ArgumentType;
+import me.rojetto.comfy.exception.CommandArgumentParseException;
 
-public abstract class RangedNumberArgument<T extends Number> extends CommandArgument<Number> {
+public abstract class RangedNumberArgument<T extends Number> extends ArgumentType<Number> {
     private boolean checkMin;
     private double min;
     private boolean checkMax;
     private double max;
 
-    protected RangedNumberArgument(String name) {
-        super(name);
-
+    protected RangedNumberArgument() {
         this.checkMin = false;
         this.min = 0;
         this.checkMax = false;
@@ -32,12 +30,12 @@ public abstract class RangedNumberArgument<T extends Number> extends CommandArgu
         return this;
     }
 
-    public boolean checkRange(double number) throws CommandArgumentException {
+    public boolean checkRange(double number) throws CommandArgumentParseException {
         if (checkMin && number < min)
-            throw new CommandArgumentException(getName() + " must be greater than " + min);
+            throw new CommandArgumentParseException("Value must be greater than " + min);
 
         if (checkMax && number > max)
-            throw new CommandArgumentException(getName() + " must be smaller than " + max);
+            throw new CommandArgumentParseException("Value must be smaller than " + max);
 
         return true;
     }

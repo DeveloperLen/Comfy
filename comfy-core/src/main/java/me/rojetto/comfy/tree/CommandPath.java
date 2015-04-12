@@ -3,6 +3,7 @@ package me.rojetto.comfy.tree;
 import me.rojetto.comfy.Arguments;
 import me.rojetto.comfy.CommandSender;
 import me.rojetto.comfy.exception.CommandArgumentException;
+import me.rojetto.comfy.exception.CommandArgumentParseException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,9 +37,14 @@ public class CommandPath implements Comparable<CommandPath> {
                 lastNode = false;
             }
 
-            if (nodeList.get(i) instanceof CommandArgument) {
-                CommandArgument argument = (CommandArgument) nodeList.get(i);
-                Object o = argument.parse(segment.toString());
+            if (nodeList.get(i) instanceof Argument) {
+                Argument argument = (Argument) nodeList.get(i);
+                Object o = null;
+                try {
+                    o = argument.getType().parse(segment.toString());
+                } catch (CommandArgumentParseException e) {
+                    throw new CommandArgumentException(argument.getName(), e.getMessage());
+                }
                 argumentMap.put(argument.getName(), o);
             }
 

@@ -1,22 +1,20 @@
 package me.rojetto.comfy.argument;
 
+import me.rojetto.comfy.ArgumentType;
 import me.rojetto.comfy.CommandContext;
-import me.rojetto.comfy.exception.CommandArgumentException;
-import me.rojetto.comfy.tree.CommandArgument;
+import me.rojetto.comfy.exception.CommandArgumentParseException;
 
 import java.util.*;
 
-public class EnumArgument<T extends Enum> extends CommandArgument<T> {
+public class EnumArgument<T extends Enum> extends ArgumentType<T> {
     private final Map<String, T> enumMap;
 
-    public EnumArgument(String name, Map<String, T> enumMap) {
-        super(name);
-
+    public EnumArgument(Map<String, T> enumMap) {
         this.enumMap = enumMap;
     }
 
-    public EnumArgument(String name, T[] enumValues, String[] names) {
-        this(name, EnumArgument.makeEnumMap(enumValues, names));
+    public EnumArgument(T[] enumValues, String[] names) {
+        this(EnumArgument.makeEnumMap(enumValues, names));
     }
 
     public static <T extends Enum> Map<String, T> makeEnumMap(T[] enumValues, String[] names) throws IllegalArgumentException {
@@ -34,7 +32,7 @@ public class EnumArgument<T extends Enum> extends CommandArgument<T> {
     }
 
     @Override
-    public T parse(String segment) throws CommandArgumentException {
+    public T parse(String segment) throws CommandArgumentParseException {
         for (String enumName : enumMap.keySet()) {
             if (enumName.equalsIgnoreCase(segment)) {
                 return enumMap.get(enumName);
@@ -51,7 +49,7 @@ public class EnumArgument<T extends Enum> extends CommandArgument<T> {
             }
         }
 
-        throw new CommandArgumentException("'" + segment + "' is not a valid option. Suggestions: " + options.toString());
+        throw new CommandArgumentParseException("'" + segment + "' is not a valid option. Suggestions: " + options.toString());
     }
 
     @Override

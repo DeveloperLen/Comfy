@@ -54,7 +54,7 @@ public abstract class CommandNode<T extends CommandNode<T>> {
             StringBuilder segment = new StringBuilder();
             boolean lastNode;
 
-            if (child.isLeaf() && child instanceof CommandArgument) { // If this is a leaf argument, give it all of the remaining segments
+            if (child.isLeaf() && child instanceof Argument) { // If this is a leaf argument, give it all of the remaining segments
                 for (int i = 0; i < segments.size(); i++) {
                     segment.append(segments.get(i));
                     if (i < segments.size() - 1) {

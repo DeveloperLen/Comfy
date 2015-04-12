@@ -1,23 +1,16 @@
 package me.rojetto.comfy.argument;
 
-import me.rojetto.comfy.CommandContext;
-import me.rojetto.comfy.exception.CommandArgumentException;
-
-import java.util.List;
+import me.rojetto.comfy.exception.CommandArgumentParseException;
 
 public class IntegerArgument extends RangedNumberArgument<Integer> {
-    public IntegerArgument(String name) {
-        super(name);
-    }
-
     @Override
-    public Integer parse(String segment) throws CommandArgumentException {
+    public Integer parse(String segment) throws CommandArgumentParseException {
         int integer;
 
         try {
             integer = Integer.parseInt(segment);
         } catch (NumberFormatException e) {
-            throw new CommandArgumentException("'" + segment + "' is not a valid integer.");
+            throw new CommandArgumentParseException("'" + segment + "' is not a valid integer.");
         }
 
         checkRange(integer);
@@ -33,10 +26,5 @@ public class IntegerArgument extends RangedNumberArgument<Integer> {
         }
 
         return true;
-    }
-
-    @Override
-    public List<String> getSuggestions(CommandContext context) {
-        return null;
     }
 }

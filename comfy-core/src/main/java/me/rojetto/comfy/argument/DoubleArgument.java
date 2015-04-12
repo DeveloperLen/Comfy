@@ -1,23 +1,16 @@
 package me.rojetto.comfy.argument;
 
-import me.rojetto.comfy.CommandContext;
-import me.rojetto.comfy.exception.CommandArgumentException;
-
-import java.util.List;
+import me.rojetto.comfy.exception.CommandArgumentParseException;
 
 public class DoubleArgument extends RangedNumberArgument<Double> {
-    public DoubleArgument(String name) {
-        super(name);
-    }
-
     @Override
-    public Double parse(String segment) throws CommandArgumentException {
+    public Double parse(String segment) throws CommandArgumentParseException {
         double number;
 
         try {
             number = Double.parseDouble(segment);
         } catch (NumberFormatException e) {
-            throw new CommandArgumentException("'" + segment + "' is not a valid floating point number.");
+            throw new CommandArgumentParseException("'" + segment + "' is not a valid floating point number.");
         }
 
         checkRange(number);
@@ -33,10 +26,5 @@ public class DoubleArgument extends RangedNumberArgument<Double> {
         }
 
         return true;
-    }
-
-    @Override
-    public List<String> getSuggestions(CommandContext context) {
-        return null;
     }
 }

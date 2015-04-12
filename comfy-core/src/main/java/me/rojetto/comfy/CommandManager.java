@@ -160,6 +160,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
             sender.warning(e.getMessage());
             help(sender, segments);
         } catch (CommandArgumentException e) {
+            sender.warning("An error occurred in argument '" + e.getArgumentName() + "'");
             sender.warning(e.getMessage());
         } catch (CommandHandlerException e) {
             e.printStackTrace();
@@ -298,8 +299,8 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
             Map<String, Boolean> usedArgumentNames = new HashMap<>();
 
             for (CommandNode node : leaf.getPath().getNodeList()) {
-                if (node instanceof CommandArgument) {
-                    CommandArgument arg = (CommandArgument) node;
+                if (node instanceof Argument) {
+                    Argument arg = (Argument) node;
                     if (usedArgumentNames.containsKey(arg.getName())) {
                         throw new CommandTreeException("Argument " + arg + " already exists in this path.");
                     } else {

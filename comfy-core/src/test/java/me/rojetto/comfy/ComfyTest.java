@@ -5,6 +5,7 @@ import me.rojetto.comfy.argument.BooleanArgument;
 import me.rojetto.comfy.argument.EnumArgument;
 import me.rojetto.comfy.argument.IntegerArgument;
 import me.rojetto.comfy.argument.StringArgument;
+import me.rojetto.comfy.tree.Argument;
 import me.rojetto.comfy.tree.CommandNode;
 import me.rojetto.comfy.tree.CommandPath;
 import me.rojetto.comfy.tree.Literal;
@@ -20,18 +21,18 @@ public class ComfyTest implements CommandListener {
         manager.addCommand(new Literal("command", "c").description("Complicated test commands").executes("command").permission("yes")
                         .child(new Literal("list").executes("listCommands"))
                         .child(new Literal("message", "msg")
-                                .child(new StringArgument("text").executes("msgCommand")))
+                                .child(new Argument("text", new StringArgument()).executes("msgCommand")))
                         .child(new Literal("opt")
-                                .child(new StringArgument("r1").executes("optCommand")
-                                        .child(new IntegerArgument("o1")
-                                                .child(new StringArgument("o2")))))
+                                .child(new Argument("r1", new StringArgument()).executes("optCommand")
+                                        .child(new Argument("o1", new IntegerArgument())
+                                                .child(new Argument("o2", new StringArgument())))))
                         .child(new Literal("bool")
-                                .child(new BooleanArgument("boolean").executes("bool")))
+                                .child(new Argument("boolean", new BooleanArgument()).executes("bool")))
                         .child(new Literal("enum")
-                                .child(new EnumArgument<>("enumeration", TestEnum.values(), new String[]{"one", "two", "three"}).executes("enum").description("Enum command")))
+                                .child(new Argument("enumeration", new EnumArgument<>(TestEnum.values(), new String[]{"one", "two", "three"})).executes("enum").description("Enum command")))
                         .child(new Literal("multi").executes("multi").description("Is not the last in this path")
                                 .child(new Literal("exe").executes("exe")))
-                        .child(new StringArgument("name").description("All name commands")
+                        .child(new Argument("name", new StringArgument()).description("All name commands")
                                 .child(new Literal("add").executes("addCommand"))
                                 .child(new Literal("remove").executes("removeCommand")))
         );
@@ -42,8 +43,6 @@ public class ComfyTest implements CommandListener {
                         .child(new Literal("ex2").executes("ex2").description("Executes 2")))
                 .child(new Literal("ex3").executes("ex3").description("Executes 3")));
         manager.registerCommands();
-
-        manager.callTestCommand("c list");
     }
 
     @CommandHandler("listCommands")
