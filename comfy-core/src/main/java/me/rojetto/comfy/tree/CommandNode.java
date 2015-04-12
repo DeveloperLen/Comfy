@@ -11,7 +11,7 @@ public abstract class CommandNode<T extends CommandNode<T>> {
     private List<CommandNode> children = new ArrayList<>();
     private Map<String, String> tags = new HashMap<>();
 
-    public T child(CommandNode child) {
+    public T then(CommandNode child) {
         if (child.getParent() != null) {
             throw new CommandTreeException("This node already has a parent");
         }

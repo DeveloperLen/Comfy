@@ -29,7 +29,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
     }
 
     public void addCommand(Literal commandNode) {
-        root.child(commandNode);
+        root.then(commandNode);
     }
 
     public void addListener(CommandListener listener) {

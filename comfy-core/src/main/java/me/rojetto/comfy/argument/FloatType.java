@@ -2,7 +2,7 @@ package me.rojetto.comfy.argument;
 
 import me.rojetto.comfy.exception.CommandArgumentParseException;
 
-public class FloatArgument extends RangedNumberArgument<Float> {
+public class FloatType extends RangedNumberType<Float> {
     @Override
     public Float parse(String segment) throws CommandArgumentParseException {
         float number;

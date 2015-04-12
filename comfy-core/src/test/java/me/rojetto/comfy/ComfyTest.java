@@ -1,47 +1,42 @@
 package me.rojetto.comfy;
 
 import me.rojetto.comfy.annotation.CommandHandler;
-import me.rojetto.comfy.argument.BooleanArgument;
-import me.rojetto.comfy.argument.EnumArgument;
-import me.rojetto.comfy.argument.IntegerArgument;
-import me.rojetto.comfy.argument.StringArgument;
-import me.rojetto.comfy.tree.Argument;
 import me.rojetto.comfy.tree.CommandNode;
 import me.rojetto.comfy.tree.CommandPath;
-import me.rojetto.comfy.tree.Literal;
 import org.junit.Test;
 
 import java.util.List;
+
+import static me.rojetto.comfy.CommandTreeUtil.*;
 
 public class ComfyTest implements CommandListener {
     @Test
     public void test() {
         TestCommandManager manager = new TestCommandManager();
         manager.addListener(this);
-        manager.addCommand(new Literal("command", "c").description("Complicated test commands").executes("command").permission("yes")
-                        .child(new Literal("list").executes("listCommands"))
-                        .child(new Literal("message", "msg")
-                                .child(new Argument("text", new StringArgument()).executes("msgCommand")))
-                        .child(new Literal("opt")
-                                .child(new Argument("r1", new StringArgument()).executes("optCommand")
-                                        .child(new Argument("o1", new IntegerArgument())
-                                                .child(new Argument("o2", new StringArgument())))))
-                        .child(new Literal("bool")
-                                .child(new Argument("boolean", new BooleanArgument()).executes("bool")))
-                        .child(new Literal("enum")
-                                .child(new Argument("enumeration", new EnumArgument<>(TestEnum.values(), new String[]{"one", "two", "three"})).executes("enum").description("Enum command")))
-                        .child(new Literal("multi").executes("multi").description("Is not the last in this path")
-                                .child(new Literal("exe").executes("exe")))
-                        .child(new Argument("name", new StringArgument()).description("All name commands")
-                                .child(new Literal("add").executes("addCommand"))
-                                .child(new Literal("remove").executes("removeCommand")))
+        manager.addCommand(literal("command", "c").description("Complicated test commands").executes("command").permission("yes")
+                        .then(literal("list").executes("listCommands"))
+                        .then(literal("message", "msg")
+                                .then(argument("text", stringType()).executes("msgCommand")))
+                        .then(literal("opt")
+                                .then(argument("r1", stringType()).executes("optCommand")
+                                        .then(argument("o1", intType())
+                                                .then(argument("o2", stringType())))))
+                        .then(literal("bool")
+                                .then(argument("boolean", booleanType()).executes("bool")))
+                        .then(literal("enum")
+                                .then(argument("enumeration", enumType(TestEnum.values(), new String[]{"one", "two", "three"})).executes("enum").description("Enum command")))
+                        .then(literal("multi").executes("multi").description("Is not the last in this path")
+                                .then(literal("exe").executes("exe")))
+                        .then(argument("name", stringType()).description("All name commands")
+                                .then(literal("add").executes("addCommand"))
+                                .then(literal("remove").executes("removeCommand")))
         );
-
-        manager.addCommand(new Literal("desc").description("All desc commands")
-                .child(new Literal("sub1").description("Sub category 1")
-                        .child(new Literal("ex1").executes("ex1").description("Executes 1"))
-                        .child(new Literal("ex2").executes("ex2").description("Executes 2")))
-                .child(new Literal("ex3").executes("ex3").description("Executes 3")));
+        manager.addCommand(literal("desc").description("All desc commands")
+                .then(literal("sub1").description("Sub category 1")
+                        .then(literal("ex1").executes("ex1").description("Executes 1"))
+                        .then(literal("ex2").executes("ex2").description("Executes 2")))
+                .then(literal("ex3").executes("ex3").description("Executes 3")));
         manager.registerCommands();
     }
 

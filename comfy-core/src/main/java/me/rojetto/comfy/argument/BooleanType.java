@@ -6,14 +6,14 @@ import me.rojetto.comfy.exception.CommandArgumentParseException;
 
 import java.util.*;
 
-public class BooleanArgument extends ArgumentType<Boolean> {
+public class BooleanType extends ArgumentType<Boolean> {
     private final Map<Boolean, String[]> booleanNames;
 
-    public BooleanArgument() {
+    public BooleanType() {
         this(new String[]{"true", "on", "yes", "enable", "1"}, new String[]{"false", "off", "no", "disable", "0"});
     }
 
-    public BooleanArgument(String[] trueAliases, String[] falseAliases) {
+    public BooleanType(String[] trueAliases, String[] falseAliases) {
         this.booleanNames = new HashMap<>();
         booleanNames.put(true, trueAliases);
         booleanNames.put(false, falseAliases);

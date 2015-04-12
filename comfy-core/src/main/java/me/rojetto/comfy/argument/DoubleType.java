@@ -2,7 +2,7 @@ package me.rojetto.comfy.argument;
 
 import me.rojetto.comfy.exception.CommandArgumentParseException;
 
-public class DoubleArgument extends RangedNumberArgument<Double> {
+public class DoubleType extends RangedNumberType<Double> {
     @Override
     public Double parse(String segment) throws CommandArgumentParseException {
         double number;

@@ -6,15 +6,15 @@ import me.rojetto.comfy.exception.CommandArgumentParseException;
 
 import java.util.*;
 
-public class EnumArgument<T extends Enum> extends ArgumentType<T> {
+public class EnumType<T extends Enum> extends ArgumentType<T> {
     private final Map<String, T> enumMap;
 
-    public EnumArgument(Map<String, T> enumMap) {
+    public EnumType(Map<String, T> enumMap) {
         this.enumMap = enumMap;
     }
 
-    public EnumArgument(T[] enumValues, String[] names) {
-        this(EnumArgument.makeEnumMap(enumValues, names));
+    public EnumType(T[] enumValues, String[] names) {
+        this(EnumType.makeEnumMap(enumValues, names));
     }
 
     public static <T extends Enum> Map<String, T> makeEnumMap(T[] enumValues, String[] names) throws IllegalArgumentException {
