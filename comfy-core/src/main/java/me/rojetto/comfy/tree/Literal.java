@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Literal extends CommandNode {
+public class Literal extends CommandNode<Literal> {
     private final List<String> aliases;
 
     public Literal(String label, String... aliases) {

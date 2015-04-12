@@ -6,10 +6,7 @@ import me.rojetto.comfy.exception.CommandArgumentException;
 import me.rojetto.comfy.exception.CommandHandlerException;
 import me.rojetto.comfy.exception.CommandPathException;
 import me.rojetto.comfy.exception.CommandTreeException;
-import me.rojetto.comfy.tree.CommandArgument;
-import me.rojetto.comfy.tree.CommandNode;
-import me.rojetto.comfy.tree.CommandPath;
-import me.rojetto.comfy.tree.CommandRoot;
+import me.rojetto.comfy.tree.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +28,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
         return root;
     }
 
-    public void addCommand(CommandNode commandNode) {
+    public void addCommand(Literal commandNode) {
         root.child(commandNode);
     }
 
@@ -62,8 +59,9 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
 
         // Special case for root node completion, because paths are weird
         CommandNode lastNode = context.getPath().getLastNode() != null ? context.getPath().getLastNode() : root;
+        List<CommandNode> children = lastNode.getChildren();
 
-        for (CommandNode child : lastNode.getChildren()) {
+        for (CommandNode child : children) {
             if (child.getSuggestions(context) != null && child.getPath().checkPermission(sender)) {
                 suggestions.addAll(child.getSuggestions(context));
             }

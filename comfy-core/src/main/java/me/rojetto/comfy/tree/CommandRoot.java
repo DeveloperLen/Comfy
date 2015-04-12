@@ -4,7 +4,7 @@ import me.rojetto.comfy.CommandContext;
 
 import java.util.List;
 
-public class CommandRoot extends CommandNode {
+public class CommandRoot extends CommandNode<CommandRoot> {
     @Override
     public boolean matches(String segmentString) {
         return false;

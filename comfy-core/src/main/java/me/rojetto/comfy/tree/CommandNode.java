@@ -6,12 +6,12 @@ import me.rojetto.comfy.exception.CommandTreeException;
 
 import java.util.*;
 
-public abstract class CommandNode {
+public abstract class CommandNode<T extends CommandNode<T>> {
     private CommandNode parent;
     private List<CommandNode> children = new ArrayList<>();
     private Map<String, String> tags = new HashMap<>();
 
-    public CommandNode child(CommandNode child) {
+    public T child(CommandNode child) {
         if (child.getParent() != null) {
             throw new CommandTreeException("This node already has a parent");
         }
@@ -19,25 +19,25 @@ public abstract class CommandNode {
         child.parent = this;
         this.children.add(child);
 
-        return this;
+        return (T) this;
     }
 
-    public CommandNode executes(String handler) {
+    public T executes(String handler) {
         tags.put("handler", handler);
 
-        return this;
+        return (T) this;
     }
 
-    public CommandNode description(String description) {
+    public T description(String description) {
         tags.put("description", description);
 
-        return this;
+        return (T) this;
     }
 
-    public CommandNode permission(String permission) {
+    public T permission(String permission) {
         tags.put("permission", permission);
 
-        return this;
+        return (T) this;
     }
 
     public CommandPath parsePath(List<String> segments, boolean returnIncompletePath) throws CommandPathException {
