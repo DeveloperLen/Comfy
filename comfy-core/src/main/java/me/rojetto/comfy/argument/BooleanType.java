@@ -2,7 +2,7 @@ package me.rojetto.comfy.argument;
 
 import me.rojetto.comfy.ArgumentType;
 import me.rojetto.comfy.CommandContext;
-import me.rojetto.comfy.exception.CommandArgumentParseException;
+import me.rojetto.comfy.exception.ArgumentParseException;
 
 import java.util.*;
 
@@ -20,7 +20,7 @@ public class BooleanType extends ArgumentType<Boolean> {
     }
 
     @Override
-    public Boolean parse(String segment) throws CommandArgumentParseException {
+    public Boolean parse(String segment) throws ArgumentParseException {
         for (boolean key : booleanNames.keySet()) {
             for (String alias : booleanNames.get(key)) {
                 if (alias.equalsIgnoreCase(segment)) {
@@ -29,7 +29,7 @@ public class BooleanType extends ArgumentType<Boolean> {
             }
         }
 
-        throw new CommandArgumentParseException("'" + segment + "' is not a valid boolean.");
+        throw new ArgumentParseException("'" + segment + "' is not a valid boolean.");
     }
 
     @Override

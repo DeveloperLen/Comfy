@@ -1,16 +1,16 @@
 package me.rojetto.comfy.argument;
 
-import me.rojetto.comfy.exception.CommandArgumentParseException;
+import me.rojetto.comfy.exception.ArgumentParseException;
 
 public class IntegerType extends RangedNumberType<Integer> {
     @Override
-    public Integer parse(String segment) throws CommandArgumentParseException {
+    public Integer parse(String segment) throws ArgumentParseException {
         int integer;
 
         try {
             integer = Integer.parseInt(segment);
         } catch (NumberFormatException e) {
-            throw new CommandArgumentParseException("'" + segment + "' is not a valid integer.");
+            throw new ArgumentParseException("'" + segment + "' is not a valid integer.");
         }
 
         checkRange(integer);

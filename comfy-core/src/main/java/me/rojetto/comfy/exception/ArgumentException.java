@@ -1,9 +1,9 @@
 package me.rojetto.comfy.exception;
 
-public class CommandArgumentException extends Exception {
+public class ArgumentException extends Exception {
     private final String argumentName;
 
-    public CommandArgumentException(String argumentName, String msg) {
+    public ArgumentException(String argumentName, String msg) {
         super(msg);
         this.argumentName = argumentName;
     }

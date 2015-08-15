@@ -1,7 +1,7 @@
 package me.rojetto.comfy.argument;
 
 import me.rojetto.comfy.ArgumentType;
-import me.rojetto.comfy.exception.CommandArgumentParseException;
+import me.rojetto.comfy.exception.ArgumentParseException;
 
 public abstract class RangedNumberType<T extends Number> extends ArgumentType<Number> {
     private boolean checkMin;
@@ -30,12 +30,12 @@ public abstract class RangedNumberType<T extends Number> extends ArgumentType<Nu
         return this;
     }
 
-    public boolean checkRange(double number) throws CommandArgumentParseException {
+    public boolean checkRange(double number) throws ArgumentParseException {
         if (checkMin && number < min)
-            throw new CommandArgumentParseException("Value must be greater than " + min);
+            throw new ArgumentParseException("Value must be greater than " + min);
 
         if (checkMax && number > max)
-            throw new CommandArgumentParseException("Value must be smaller than " + max);
+            throw new ArgumentParseException("Value must be smaller than " + max);
 
         return true;
     }

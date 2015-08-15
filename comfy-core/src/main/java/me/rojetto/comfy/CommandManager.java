@@ -2,10 +2,10 @@ package me.rojetto.comfy;
 
 import me.rojetto.comfy.annotation.Arg;
 import me.rojetto.comfy.annotation.CommandHandler;
-import me.rojetto.comfy.exception.CommandArgumentException;
-import me.rojetto.comfy.exception.CommandHandlerException;
-import me.rojetto.comfy.exception.CommandPathException;
+import me.rojetto.comfy.exception.ArgumentException;
 import me.rojetto.comfy.exception.CommandTreeException;
+import me.rojetto.comfy.exception.HandlerException;
+import me.rojetto.comfy.exception.PathException;
 import me.rojetto.comfy.tree.*;
 
 import java.lang.annotation.Annotation;
@@ -51,9 +51,9 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
 
         try {
             context = parseSegments(sender, segmentsCopy);
-        } catch (CommandPathException e) {
+        } catch (PathException e) {
             return suggestions;
-        } catch (CommandArgumentException e) {
+        } catch (ArgumentException e) {
             return suggestions;
         }
 
@@ -129,7 +129,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
             for (CommandPath helpfulPath : paths) {
                 sender.pathHelp(helpfulPath);
             }
-        } catch (CommandPathException e) {
+        } catch (PathException e) {
             sender.warning(e.getMessage());
         }
     }
@@ -156,13 +156,13 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
                     sender.warning("You do not have permission to execute this command.");
                 }
             }
-        } catch (CommandPathException e) {
+        } catch (PathException e) {
             sender.warning(e.getMessage());
             help(sender, segments);
-        } catch (CommandArgumentException e) {
+        } catch (ArgumentException e) {
             sender.warning("An error occurred in argument '" + e.getArgumentName() + "'");
             sender.warning(e.getMessage());
-        } catch (CommandHandlerException e) {
+        } catch (HandlerException e) {
             e.printStackTrace();
         }
     }
@@ -197,7 +197,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
         return segments;
     }
 
-    private C parseSegments(S sender, List<String> segments) throws CommandPathException, CommandArgumentException {
+    private C parseSegments(S sender, List<String> segments) throws PathException, ArgumentException {
         CommandPath path = root.parsePath(segments, false);
         Arguments args = path.parseArguments(segments);
 
@@ -206,7 +206,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
         return context;
     }
 
-    private void callHandlerMethod(String handler, C context) throws CommandHandlerException {
+    private void callHandlerMethod(String handler, C context) throws HandlerException {
         if (handlerMethods.containsKey(handler)) {
             for (AbstractMap.Entry<Method, CommandListener> pair : handlerMethods.get(handler)) {
                 Method method = pair.getKey();
@@ -230,7 +230,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
                         Object value = context.getArguments().get(annotation.value());
 
                         if (!valueTypeFitsParameterType(value.getClass(), parameterType)) {
-                            throw new CommandHandlerException("Method argument " + annotation.value() + " should be of type " + value.getClass().getName());
+                            throw new HandlerException("Method argument " + annotation.value() + " should be of type " + value.getClass().getName());
                         }
 
                         arguments[i] = value;
@@ -248,9 +248,9 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
                 try {
                     method.invoke(listener, arguments);
                 } catch (IllegalAccessException e) {
-                    throw new CommandHandlerException(e.getMessage());
+                    throw new HandlerException(e.getMessage());
                 } catch (InvocationTargetException e) {
-                    throw new CommandHandlerException(e.getMessage());
+                    throw new HandlerException(e.getMessage());
                 }
             }
         }
@@ -319,7 +319,7 @@ public abstract class CommandManager<C extends CommandContext, S extends Command
         }
     }
 
-    private void mapHandlerMethods() throws CommandHandlerException {
+    private void mapHandlerMethods() throws HandlerException {
         for (CommandListener listener : listeners) {
             for (Method method : listener.getClass().getMethods()) {
                 if (method.getAnnotation(CommandHandler.class) != null) {

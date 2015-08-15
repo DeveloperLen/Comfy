@@ -1,14 +1,16 @@
 package me.rojetto.comfy.tree;
 
 import me.rojetto.comfy.CommandContext;
-import me.rojetto.comfy.exception.CommandPathException;
+import me.rojetto.comfy.Flag;
 import me.rojetto.comfy.exception.CommandTreeException;
+import me.rojetto.comfy.exception.PathException;
 
 import java.util.*;
 
 public abstract class CommandNode<T extends CommandNode<T>> {
     private CommandNode parent;
     private List<CommandNode> children = new ArrayList<>();
+    private List<Flag> flags = new ArrayList<>();
     private Map<String, String> tags = new HashMap<>();
 
     public T then(CommandNode child) {
@@ -18,6 +20,18 @@ public abstract class CommandNode<T extends CommandNode<T>> {
 
         child.parent = this;
         this.children.add(child);
+
+        return (T) this;
+    }
+
+    public T flag(Flag flag) {
+        for (Flag otherFlag : getPath().getFlags()) {
+            if (otherFlag.getLabel().equalsIgnoreCase(flag.getLabel())) {
+                throw new CommandTreeException("Flag '" + flag.getLabel() + "' already exists in this path.");
+            }
+        }
+
+        flags.add(flag);
 
         return (T) this;
     }
@@ -40,7 +54,7 @@ public abstract class CommandNode<T extends CommandNode<T>> {
         return (T) this;
     }
 
-    public CommandPath parsePath(List<String> segments, boolean returnIncompletePath) throws CommandPathException {
+    public CommandPath parsePath(List<String> segments, boolean returnIncompletePath) throws PathException {
         List<String> segmentsCopy = new ArrayList<>(segments);
 
         if (segmentsCopy.size() == 0) {
@@ -82,7 +96,7 @@ public abstract class CommandNode<T extends CommandNode<T>> {
         }
 
         if (!matchedChild && !returnIncompletePath) {
-            throw new CommandPathException("Invalid sub-command or argument: '" + segments.get(0) + "'");
+            throw new PathException("Invalid sub-command or argument: '" + segments.get(0) + "'");
         }
 
         return path;
@@ -241,6 +255,10 @@ public abstract class CommandNode<T extends CommandNode<T>> {
 
     public List<CommandNode> getChildren() {
         return new ArrayList<>(children);
+    }
+
+    public List<Flag> getFlags() {
+        return new ArrayList<>(flags);
     }
 
     public abstract boolean matches(String segment);

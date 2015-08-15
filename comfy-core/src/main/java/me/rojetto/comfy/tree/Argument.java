@@ -27,6 +27,7 @@ public class Argument extends CommandNode<Argument> {
         return type;
     }
 
+    @Override
     public boolean matches(String segment) {
         return type.matches(segment);
     }

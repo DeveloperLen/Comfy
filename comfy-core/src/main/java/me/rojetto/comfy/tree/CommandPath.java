@@ -2,9 +2,11 @@ package me.rojetto.comfy.tree;
 
 import me.rojetto.comfy.Arguments;
 import me.rojetto.comfy.CommandSender;
-import me.rojetto.comfy.exception.CommandArgumentException;
-import me.rojetto.comfy.exception.CommandArgumentParseException;
+import me.rojetto.comfy.Flag;
+import me.rojetto.comfy.exception.ArgumentException;
+import me.rojetto.comfy.exception.ArgumentParseException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class CommandPath implements Comparable<CommandPath> {
         this.nodeList = nodeList;
     }
 
-    public Arguments parseArguments(List<String> segments) throws CommandArgumentException {
+    public Arguments parseArguments(List<String> segments) throws ArgumentException {
         Map<String, Object> argumentMap = new HashMap<>();
 
         for (int i = 0; i < segments.size(); i++) {
@@ -42,8 +44,8 @@ public class CommandPath implements Comparable<CommandPath> {
                 Object o = null;
                 try {
                     o = argument.getType().parse(segment.toString());
-                } catch (CommandArgumentParseException e) {
-                    throw new CommandArgumentException(argument.getName(), e.getMessage());
+                } catch (ArgumentParseException e) {
+                    throw new ArgumentException(argument.getName(), e.getMessage());
                 }
                 argumentMap.put(argument.getName(), o);
             }
@@ -66,6 +68,16 @@ public class CommandPath implements Comparable<CommandPath> {
 
     public List<CommandNode> getNodeList() {
         return nodeList;
+    }
+
+    public List<Flag> getFlags() {
+        List<Flag> flags = new ArrayList<>();
+
+        for (CommandNode node : nodeList) {
+            flags.addAll(node.getFlags());
+        }
+
+        return flags;
     }
 
     public boolean checkPermission(CommandSender sender) {

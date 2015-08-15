@@ -1,5 +1,6 @@
 package me.rojetto.comfy;
 
+import me.rojetto.comfy.annotation.Arg;
 import me.rojetto.comfy.annotation.CommandHandler;
 import me.rojetto.comfy.tree.CommandNode;
 import me.rojetto.comfy.tree.CommandPath;
@@ -38,6 +39,8 @@ public class ComfyTest implements CommandListener {
                         .then(literal("ex2").executes("ex2").description("Executes 2")))
                 .then(literal("ex3").executes("ex3").description("Executes 3")));
         manager.registerCommands();
+
+        manager.callTestCommand("c enum one");
     }
 
     @CommandHandler("listCommands")
@@ -71,8 +74,9 @@ public class ComfyTest implements CommandListener {
     }
 
     @CommandHandler("enum")
-    public void enumCommand(TestCommandContext context) {
+    public void enumCommand(TestCommandContext context, @Arg("enumeration") TestEnum meinEnumArgument) {
         context.getSender().info(context.getPath() + "; " + context.getArguments());
+        context.getSender().info(meinEnumArgument.toString());
     }
 
     class TestCommandManager extends CommandManager<TestCommandContext, ConsoleSender> {

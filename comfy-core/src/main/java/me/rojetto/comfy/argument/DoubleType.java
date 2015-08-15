@@ -1,16 +1,16 @@
 package me.rojetto.comfy.argument;
 
-import me.rojetto.comfy.exception.CommandArgumentParseException;
+import me.rojetto.comfy.exception.ArgumentParseException;
 
 public class DoubleType extends RangedNumberType<Double> {
     @Override
-    public Double parse(String segment) throws CommandArgumentParseException {
+    public Double parse(String segment) throws ArgumentParseException {
         double number;
 
         try {
             number = Double.parseDouble(segment);
         } catch (NumberFormatException e) {
-            throw new CommandArgumentParseException("'" + segment + "' is not a valid floating point number.");
+            throw new ArgumentParseException("'" + segment + "' is not a valid floating point number.");
         }
 
         checkRange(number);

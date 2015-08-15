@@ -2,7 +2,7 @@ package me.rojetto.comfy.argument;
 
 import me.rojetto.comfy.ArgumentType;
 import me.rojetto.comfy.CommandContext;
-import me.rojetto.comfy.exception.CommandArgumentParseException;
+import me.rojetto.comfy.exception.ArgumentParseException;
 
 import java.util.*;
 
@@ -32,7 +32,7 @@ public class EnumType<T extends Enum> extends ArgumentType<T> {
     }
 
     @Override
-    public T parse(String segment) throws CommandArgumentParseException {
+    public T parse(String segment) throws ArgumentParseException {
         for (String enumName : enumMap.keySet()) {
             if (enumName.equalsIgnoreCase(segment)) {
                 return enumMap.get(enumName);
@@ -49,7 +49,7 @@ public class EnumType<T extends Enum> extends ArgumentType<T> {
             }
         }
 
-        throw new CommandArgumentParseException("'" + segment + "' is not a valid option. Suggestions: " + options.toString());
+        throw new ArgumentParseException("'" + segment + "' is not a valid option. Suggestions: " + options.toString());
     }
 
     @Override

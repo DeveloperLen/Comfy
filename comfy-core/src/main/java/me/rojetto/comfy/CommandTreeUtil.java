@@ -36,4 +36,12 @@ public class CommandTreeUtil {
     public static FloatType floatType() {
         return new FloatType();
     }
+
+    public static Flag flag(String label, ArgumentType type) {
+        return new Flag(label, type);
+    }
+
+    public static Flag flag(String label) {
+        return flag(label, null);
+    }
 }

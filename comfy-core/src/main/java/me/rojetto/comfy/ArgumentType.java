@@ -1,16 +1,16 @@
 package me.rojetto.comfy;
 
-import me.rojetto.comfy.exception.CommandArgumentParseException;
+import me.rojetto.comfy.exception.ArgumentParseException;
 
 import java.util.List;
 
 public abstract class ArgumentType<T> {
-    abstract public T parse(String segment) throws CommandArgumentParseException;
+    abstract public T parse(String segment) throws ArgumentParseException;
 
     public boolean matches(String segment) {
         try {
             parse(segment);
-        } catch (CommandArgumentParseException e) {
+        } catch (ArgumentParseException e) {
             return false;
         }
 
