@@ -41,7 +41,7 @@ public class CommandPath implements Comparable<CommandPath> {
 
             if (nodeList.get(i) instanceof Argument) {
                 Argument argument = (Argument) nodeList.get(i);
-                Object o = null;
+                Object o;
                 try {
                     o = argument.getType().parse(segment.toString());
                 } catch (ArgumentParseException e) {
