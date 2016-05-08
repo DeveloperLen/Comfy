@@ -1,3 +1,5 @@
 rootProject.name = "comfy"
 
 include "comfy-core", "comfy-bukkit"
+include 'comfy-bungeecord'
+

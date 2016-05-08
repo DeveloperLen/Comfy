@@ -12,5 +12,6 @@ subprojects {
         mavenCentral()
         mavenLocal()
         maven { url "https://hub.spigotmc.org/nexus/content/groups/public/" }
+        maven { url "https://oss.sonatype.org/content/groups/public" }
     }
 }
